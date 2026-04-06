@@ -172,7 +172,7 @@ export default function Home() {
               Mes projets
             </h2>
             <p className="animate-fade-in-up delay-200 mx-auto mt-4 max-w-xl text-neutral-400">
-              7 projets actifs couvrant le SaaS, le e-commerce, les services web
+              8 projets actifs couvrant le SaaS, le e-commerce, les services web
               et les plateformes locales.
             </p>
           </div>
@@ -283,7 +283,7 @@ export default function Home() {
                   suisses a se developper.
                 </p>
                 <p>
-                  Avec 7 projets actifs couvrant le SaaS, le e-commerce, les
+                  Avec 8 projets actifs couvrant le SaaS, le e-commerce, les
                   services web et les plateformes locales, mon objectif est de
                   construire un ecosysteme digital au service de la Suisse.
                 </p>
