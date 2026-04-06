@@ -290,28 +290,6 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="animate-fade-in-up delay-300">
-              <p className="mb-6 text-sm font-medium uppercase tracking-[0.3em] text-neutral-500">
-                Technologies
-              </p>
-              <div className="flex flex-wrap gap-3">
-                {skills.map((skill) => (
-                  <span
-                    key={skill}
-                    className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-neutral-300 transition-colors hover:border-white/20 hover:text-white"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
-
-              <div className="mt-10 rounded-2xl border border-white/5 bg-[#111111] p-6">
-                <p className="mb-1 text-sm text-neutral-500">Stack principale</p>
-                <p className="font-mono text-sm text-neutral-300">
-                  Next.js + React + TypeScript + Supabase + Tailwind + Vercel
-                </p>
-              </div>
-            </div>
           </div>
         </div>
       </section>
