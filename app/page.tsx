@@ -69,7 +69,7 @@ const stats = [
   { value: "8", label: "Projets actifs" },
   { value: "4", label: "Secteurs" },
   { value: "100%", label: "Suisse" },
-  { value: "2024", label: "Depuis" },
+  { value: "2017", label: "Depuis" },
 ];
 
 const skills = [
