@@ -55,10 +55,18 @@ const projects = [
     type: "Annuaire local",
     color: "#0d9488",
   },
+  {
+    name: "Glariade",
+    url: "https://glariade.ch",
+    description:
+      "Site specialise dans la fameuse recette de la Glariade, un incontournable de la gastronomie suisse.",
+    type: "Site culinaire",
+    color: "#b45309",
+  },
 ];
 
 const stats = [
-  { value: "7", label: "Projets actifs" },
+  { value: "8", label: "Projets actifs" },
   { value: "4", label: "Secteurs" },
   { value: "100%", label: "Suisse" },
   { value: "2024", label: "Depuis" },
