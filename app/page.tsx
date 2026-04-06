@@ -133,7 +133,7 @@ export default function Home() {
             <span className="gradient-text-accent">Entrepreneur Digital</span>
           </h1>
           <p className="animate-fade-in-up delay-400 mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-neutral-400 sm:text-xl">
-            Je cree des produits digitaux qui simplifient la vie des gens et des
+            Je crée des produits digitaux qui simplifient la vie des gens et des
             entreprises en Suisse.
           </p>
           <div className="animate-fade-in-up delay-600 flex flex-col items-center justify-center gap-4 sm:flex-row">
@@ -141,7 +141,7 @@ export default function Home() {
               href="#projets"
               className="inline-flex h-12 items-center justify-center rounded-full bg-white px-8 text-sm font-semibold text-black transition-all hover:bg-neutral-200 hover:shadow-lg hover:shadow-white/10"
             >
-              Decouvrir mes projets
+              Découvrir mes projets
             </a>
             <a
               href="#contact"
@@ -307,7 +307,7 @@ export default function Home() {
             Travaillons ensemble
           </h2>
           <p className="animate-fade-in-up delay-200 mx-auto mb-12 max-w-xl text-neutral-400">
-            Un projet en tete ? Une question ? N&apos;hesitez pas a me
+            Un projet en tête ? Une question ? N&apos;hésitez pas à me
             contacter directement.
           </p>
 
