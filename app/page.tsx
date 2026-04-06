@@ -3,7 +3,7 @@ const projects = [
     name: "Yattoo",
     url: "https://yattoo.io",
     description:
-      "App mobile et web qui permet de faire des economies sur ses courses, reduire sa charge mentale et le gaspillage alimentaire.",
+      "App mobile et web qui permet de faire des économies sur ses courses, réduire sa charge mentale et le gaspillage alimentaire.",
     type: "SaaS B2C",
     color: "#22c55e",
   },
@@ -11,7 +11,7 @@ const projects = [
     name: "OnVousTrouve.ch",
     url: "https://onvoustrouve.ch",
     description:
-      "Permet aux commercants locaux de se faire voir sur internet en leur creant un site professionnel.",
+      "Permet aux commerçants locaux de se faire voir sur internet en leur créant un site professionnel.",
     type: "Agence web B2B",
     color: "#1e40af",
   },
@@ -19,7 +19,7 @@ const projects = [
     name: "L'Atelier Suisse B2C",
     url: "https://lateliersuisse.ch",
     description:
-      "E-commerce specialise dans la personnalisation sur textiles et objets pour particuliers.",
+      "E-commerce spécialisé dans la personnalisation sur textiles et objets pour particuliers.",
     type: "E-commerce B2C",
     color: "#dc2626",
   },
@@ -35,7 +35,7 @@ const projects = [
     name: "FunkyFeet",
     url: "https://funkyfeet.ch",
     description:
-      "Boutique en ligne specialisee dans la vente de chaussettes originales et de qualite.",
+      "Boutique en ligne spécialisée dans la vente de chaussettes originales et de qualité.",
     type: "E-commerce B2C",
     color: "#7c3aed",
   },
@@ -43,7 +43,7 @@ const projects = [
     name: "Just-Tag",
     url: "https://just-tag.ch",
     description:
-      "Plateforme qui met en avant les meilleurs endroits ou manger et sortir en Suisse.",
+      "Plateforme qui met en avant les meilleurs endroits où manger et sortir en Suisse.",
     type: "Plateforme locale",
     color: "#ea580c",
   },
@@ -51,7 +51,7 @@ const projects = [
     name: "Signature Locale",
     url: "https://signaturelocale.ch",
     description:
-      "Permet aux commerces locaux suisses de mettre en avant leur etablissement aupres de leur communaute.",
+      "Permet aux commerces locaux suisses de mettre en avant leur établissement auprès de leur communauté.",
     type: "Annuaire local",
     color: "#0d9488",
   },
@@ -59,7 +59,7 @@ const projects = [
     name: "Glariade",
     url: "https://glariade.ch",
     description:
-      "Site specialise dans la fameuse recette de la Glariade, un incontournable de la gastronomie suisse.",
+      "Site spécialisé dans la fameuse recette de la Glariade, un incontournable de la gastronomie suisse.",
     type: "Site culinaire",
     color: "#b45309",
   },
@@ -105,7 +105,7 @@ export default function Home() {
               href="#a-propos"
               className="text-sm text-neutral-400 transition-colors hover:text-white"
             >
-              A propos
+              À propos
             </a>
             <a
               href="#contact"
@@ -270,22 +270,22 @@ export default function Home() {
           <div className="grid items-start gap-16 md:grid-cols-2">
             <div>
               <p className="animate-fade-in mb-4 text-sm font-medium uppercase tracking-[0.3em] text-neutral-500">
-                A propos
+                À propos
               </p>
               <h2 className="animate-fade-in-up delay-100 mb-8 text-4xl font-bold tracking-tight sm:text-5xl">
                 Adrien Haubrich
               </h2>
               <div className="animate-fade-in-up delay-200 space-y-4 text-neutral-400 leading-relaxed">
                 <p>
-                  Base au Bouveret, en Valais, je suis passionne par
-                  l&apos;entrepreneuriat digital. Je cree des solutions
+                  Basé au Bouveret, en Valais, je suis passionné par
+                  l&apos;entrepreneuriat digital. Je crée des solutions
                   technologiques pour aider les particuliers et les entreprises
-                  suisses a se developper.
+                  suisses à se développer.
                 </p>
                 <p>
                   Avec 8 projets actifs couvrant le SaaS, le e-commerce, les
                   services web et les plateformes locales, mon objectif est de
-                  construire un ecosysteme digital au service de la Suisse.
+                  construire un écosystème digital au service de la Suisse.
                 </p>
               </div>
             </div>
@@ -380,7 +380,7 @@ export default function Home() {
         <div className="mx-auto max-w-6xl px-6 text-center">
           <p className="text-sm text-neutral-600">
             &copy; 2026 Adrien Haubrich — Le Bouveret, Valais, Suisse. Tous
-            droits reserves.
+            droits réservés.
           </p>
         </div>
       </footer>
