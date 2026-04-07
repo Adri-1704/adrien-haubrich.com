@@ -22,6 +22,7 @@ const projects = [
       "E-commerce spécialisé dans la personnalisation sur textiles et objets pour particuliers.",
     type: "E-commerce B2C",
     color: "#dc2626",
+    forSale: true,
   },
   {
     name: "LatelierSuisse.co",
@@ -30,6 +31,7 @@ const projects = [
       "Personnalisation sur textiles et objets pour entreprises. Solutions sur mesure en volume.",
     type: "E-commerce B2B",
     color: "#991b1b",
+    forSale: true,
   },
   {
     name: "FunkyFeet.ch",
@@ -54,6 +56,7 @@ const projects = [
       "Permet aux commerces locaux suisses de mettre en avant leur établissement auprès de leur communauté.",
     type: "Annuaire local",
     color: "#0d9488",
+    forSale: true,
   },
   {
     name: "Glariade.ch",
