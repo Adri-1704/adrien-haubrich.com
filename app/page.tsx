@@ -152,13 +152,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Scroll indicator */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-fade-in delay-1000">
-          <div className="flex flex-col items-center gap-2">
-            <span className="text-xs text-neutral-600">Scroll</span>
-            <div className="h-8 w-px bg-gradient-to-b from-neutral-600 to-transparent" />
-          </div>
-        </div>
       </section>
 
       {/* ==================== PROJECTS ==================== */}
