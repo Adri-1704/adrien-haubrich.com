@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Adrien Haubrich — Entrepreneur Digital Suisse",
   description:
-    "Portfolio d'Adrien Haubrich, entrepreneur digital suisse. Fondateur de 7 projets : Yattoo, OnVousTrouve.ch, L'Atelier Suisse, FunkyFeet, Just-Tag et Signature Locale.",
+    "Portfolio d'Adrien Haubrich, entrepreneur digital suisse. Fondateur de 8 projets : Yattoo, OnVousTrouve.ch, L'Atelier Suisse, FunkyFeet, Just-Tag, Signature Locale et Glariade.",
   keywords: [
     "Adrien Haubrich",
     "entrepreneur digital",
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Adrien Haubrich — Entrepreneur Digital Suisse",
     description:
-      "Fondateur de 7 projets digitaux en Suisse. Produits SaaS, e-commerce et solutions locales.",
+      "Fondateur de 8 projets digitaux en Suisse. Produits SaaS, e-commerce et solutions locales.",
     locale: "fr_CH",
     type: "website",
   },
