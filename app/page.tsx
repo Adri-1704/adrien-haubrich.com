@@ -62,6 +62,7 @@ const projects = [
       "Site spécialisé dans la fameuse recette de la Glariade, un incontournable de la gastronomie suisse.",
     type: "Site culinaire",
     color: "#b45309",
+    forSale: true,
   },
 ];
 
@@ -195,6 +196,11 @@ export default function Home() {
                 />
 
                 <div className="relative">
+                  {project.forSale && (
+                    <div className="absolute -top-3 -right-3 z-10 rotate-12 rounded-sm border-2 border-red-500 bg-red-500/10 px-3 py-1 text-xs font-black uppercase tracking-wider text-red-500 shadow-lg backdrop-blur-sm">
+                      A vendre
+                    </div>
+                  )}
                   <div className="mb-4 flex items-start justify-between">
                     <h3 className="text-xl font-bold text-white">
                       {project.name}
