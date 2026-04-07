@@ -118,7 +118,7 @@ export default function Home() {
       </nav>
 
       {/* ==================== HERO ==================== */}
-      <section className="relative flex min-h-screen items-center justify-center overflow-hidden bg-grid">
+      <section className="relative flex min-h-[70vh] items-center justify-center overflow-hidden bg-grid pt-20">
         {/* Background orbs */}
         <div className="pointer-events-none absolute inset-0 hero-gradient" />
         <div className="pointer-events-none absolute top-1/4 left-1/4 h-72 w-72 rounded-full bg-green-500/10 blur-3xl animate-pulse-slow" />
@@ -155,7 +155,7 @@ export default function Home() {
       </section>
 
       {/* ==================== PROJECTS ==================== */}
-      <section id="projets" className="relative py-32">
+      <section id="projets" className="relative py-16">
         <div className="mx-auto max-w-6xl px-6">
           <div className="mb-16 text-center">
             <p className="animate-fade-in mb-4 text-sm font-medium uppercase tracking-[0.3em] text-neutral-500">
@@ -238,7 +238,7 @@ export default function Home() {
       </section>
 
       {/* ==================== STATS ==================== */}
-      <section className="border-y border-white/5 py-20">
+      <section className="border-y border-white/5 py-12">
         <div className="mx-auto max-w-6xl px-6">
           <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
             {stats.map((stat, index) => (
@@ -258,7 +258,7 @@ export default function Home() {
       </section>
 
       {/* ==================== ABOUT ==================== */}
-      <section id="a-propos" className="py-32">
+      <section id="a-propos" className="py-16">
         <div className="mx-auto max-w-6xl px-6">
           <div className="grid items-start gap-16 md:grid-cols-2">
             <div>
@@ -290,7 +290,7 @@ export default function Home() {
       {/* ==================== CONTACT ==================== */}
       <section
         id="contact"
-        className="border-t border-white/5 py-32"
+        className="border-t border-white/5 py-16"
       >
         <div className="mx-auto max-w-6xl px-6 text-center">
           <p className="animate-fade-in mb-4 text-sm font-medium uppercase tracking-[0.3em] text-neutral-500">
