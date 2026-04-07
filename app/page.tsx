@@ -197,7 +197,7 @@ export default function Home() {
 
                 <div className="relative">
                   {project.forSale && (
-                    <div className="absolute -top-3 -right-3 z-10 rotate-12 rounded-sm border-2 border-red-500 bg-red-500/10 px-3 py-1 text-xs font-black uppercase tracking-wider text-red-500 shadow-lg backdrop-blur-sm">
+                    <div className="absolute -top-3 left-20 z-10 -rotate-12 rounded-sm border-2 border-red-500 bg-red-500/10 px-3 py-1 text-xs font-black uppercase tracking-wider text-red-500 shadow-lg backdrop-blur-sm">
                       A vendre
                     </div>
                   )}
