@@ -50,6 +50,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[#0a0a0a] text-white">
+        <script dangerouslySetInnerHTML={{ __html: `if(window.location.hash){history.replaceState(null,'',window.location.pathname);window.scrollTo(0,0);}` }} />
         {children}
       </body>
     </html>
