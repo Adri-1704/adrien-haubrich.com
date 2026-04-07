@@ -199,11 +199,6 @@ export default function Home() {
                 />
 
                 <div className="relative">
-                  {project.forSale && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10 -rotate-12 rounded-sm border-2 border-red-500 bg-red-500/10 px-3 py-1 text-xs font-black uppercase tracking-wider text-red-500 shadow-lg backdrop-blur-sm">
-                      A vendre
-                    </div>
-                  )}
                   <div className="mb-4 flex items-start justify-between">
                     <h3 className="text-xl font-bold text-white">
                       {project.name}
@@ -223,21 +218,28 @@ export default function Home() {
                     {project.description}
                   </p>
 
-                  <div className="flex items-center gap-2 text-sm font-medium text-neutral-500 transition-colors group-hover:text-white">
-                    <span>Visiter le site</span>
-                    <svg
-                      className="h-4 w-4 transition-transform group-hover:translate-x-1"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M17 8l4 4m0 0l-4 4m4-4H3"
-                      />
-                    </svg>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-sm font-medium text-neutral-500 transition-colors group-hover:text-white">
+                      <span>Visiter le site</span>
+                      <svg
+                        className="h-4 w-4 transition-transform group-hover:translate-x-1"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M17 8l4 4m0 0l-4 4m4-4H3"
+                        />
+                      </svg>
+                    </div>
+                    {project.forSale && (
+                      <span className="rounded border border-red-500 bg-red-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-red-500">
+                        A vendre
+                      </span>
+                    )}
                   </div>
                 </div>
               </a>
