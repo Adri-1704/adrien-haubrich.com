@@ -331,7 +331,7 @@ export default function Home() {
 
             {/* Email */}
             <a
-              href="mailto:adrien@lateliersuisse.ch"
+              href="mailto:contact@adrien-haubrich.com"
               className="inline-flex h-14 items-center gap-3 rounded-full border border-white/15 px-8 text-sm font-semibold text-white transition-all hover:border-white/30 hover:bg-white/5"
             >
               <svg
@@ -347,7 +347,7 @@ export default function Home() {
                   d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
                 />
               </svg>
-              <span>adrien@lateliersuisse.ch</span>
+              <span>contact@adrien-haubrich.com</span>
             </a>
           </div>
         </div>
