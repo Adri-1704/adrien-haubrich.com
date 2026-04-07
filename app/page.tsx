@@ -1,6 +1,6 @@
 const projects = [
   {
-    name: "Yattoo",
+    name: "Yattoo.io",
     url: "https://yattoo.io",
     description:
       "App mobile et web qui permet de faire des économies sur ses courses, réduire sa charge mentale et le gaspillage alimentaire.",
@@ -16,7 +16,7 @@ const projects = [
     color: "#1e40af",
   },
   {
-    name: "L'Atelier Suisse B2C",
+    name: "LatelierSuisse.ch",
     url: "https://lateliersuisse.ch",
     description:
       "E-commerce spécialisé dans la personnalisation sur textiles et objets pour particuliers.",
@@ -24,7 +24,7 @@ const projects = [
     color: "#dc2626",
   },
   {
-    name: "L'Atelier Suisse B2B",
+    name: "LatelierSuisse.co",
     url: "https://lateliersuisse.co",
     description:
       "Personnalisation sur textiles et objets pour entreprises. Solutions sur mesure en volume.",
@@ -32,7 +32,7 @@ const projects = [
     color: "#991b1b",
   },
   {
-    name: "FunkyFeet",
+    name: "FunkyFeet.ch",
     url: "https://funkyfeet.ch",
     description:
       "Boutique en ligne spécialisée dans la vente de chaussettes originales et de qualité.",
@@ -40,7 +40,7 @@ const projects = [
     color: "#7c3aed",
   },
   {
-    name: "Just-Tag",
+    name: "Just-Tag.ch",
     url: "https://just-tag.ch",
     description:
       "Plateforme qui met en avant les meilleurs endroits où manger et sortir en Suisse.",
@@ -48,7 +48,7 @@ const projects = [
     color: "#ea580c",
   },
   {
-    name: "Signature Locale",
+    name: "SignatureLocale.ch",
     url: "https://signaturelocale.ch",
     description:
       "Permet aux commerces locaux suisses de mettre en avant leur établissement auprès de leur communauté.",
@@ -56,7 +56,7 @@ const projects = [
     color: "#0d9488",
   },
   {
-    name: "Glariade",
+    name: "Glariade.ch",
     url: "https://glariade.ch",
     description:
       "Site spécialisé dans la fameuse recette de la Glariade, un incontournable de la gastronomie suisse.",
