@@ -371,7 +371,7 @@ export default function Home() {
               {/* FormSubmit config */}
               <input type="hidden" name="_subject" value="Nouveau message depuis adrien-haubrich.com" />
               <input type="hidden" name="_captcha" value="false" />
-              <input type="hidden" name="_next" value="https://adrien-haubrich.com" />
+              <input type="hidden" name="_next" value="https://adrien-haubrich.com/merci" />
 
               <div className="grid gap-6 sm:grid-cols-2">
                 {/* Nom */}
