@@ -134,7 +134,7 @@ export default function Home() {
             Le Bouveret, Valais, Suisse
           </p>
           <h1 className="animate-fade-in-up delay-200 mb-6 text-5xl font-extrabold leading-tight tracking-tight sm:text-7xl">
-            <span className="gradient-text-accent">Entrepreneur Digital</span>
+            <span className="gradient-text-accent text-shimmer">Entrepreneur Digital</span>
           </h1>
           <p className="animate-fade-in-up delay-400 mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-neutral-400 sm:text-xl">
             Je crée des produits digitaux qui simplifient la vie des gens et des
@@ -303,19 +303,108 @@ export default function Home() {
         id="contact"
         className="border-t border-white/5 py-16"
       >
-        <div className="mx-auto max-w-6xl px-6 text-center">
-          <p className="animate-fade-in mb-4 text-sm font-medium uppercase tracking-[0.3em] text-neutral-500">
-            Contact
-          </p>
-          <h2 className="animate-fade-in-up delay-100 mb-4 text-4xl font-bold tracking-tight sm:text-5xl">
-            Travaillons ensemble
-          </h2>
-          <p className="animate-fade-in-up delay-200 mx-auto mb-12 max-w-xl text-neutral-400">
-            Un projet en tête ? Une question ? N&apos;hésitez pas à me
-            contacter directement.
-          </p>
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="text-center">
+            <p className="animate-fade-in mb-4 text-sm font-medium uppercase tracking-[0.3em] text-neutral-500">
+              Contact
+            </p>
+            <h2 className="animate-fade-in-up delay-100 mb-4 text-4xl font-bold tracking-tight sm:text-5xl">
+              Travaillons ensemble
+            </h2>
+            <p className="animate-fade-in-up delay-200 mx-auto mb-12 max-w-xl text-neutral-400">
+              Un projet en tête ? Une question ? N&apos;hésitez pas à me
+              contacter directement.
+            </p>
+          </div>
 
-          <div className="animate-fade-in-up delay-300 flex flex-col items-center justify-center gap-4 sm:flex-row">
+          {/* Contact Form */}
+          <div className="animate-fade-in-up delay-300 mx-auto max-w-2xl">
+            <form
+              action="https://formsubmit.co/contact@adrien-haubrich.com"
+              method="POST"
+              className="rounded-2xl border border-white/10 bg-[#111111] p-8 space-y-6"
+            >
+              {/* FormSubmit config */}
+              <input type="hidden" name="_subject" value="Nouveau message depuis adrien-haubrich.com" />
+              <input type="hidden" name="_captcha" value="false" />
+              <input type="hidden" name="_next" value="https://adrien-haubrich.com" />
+
+              <div className="grid gap-6 sm:grid-cols-2">
+                {/* Nom */}
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="name" className="text-sm font-medium text-neutral-300">
+                    Nom
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    id="name"
+                    required
+                    placeholder="Votre nom"
+                    className="rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-neutral-500 outline-none transition-all focus:border-white/25 focus:ring-1 focus:ring-white/25"
+                  />
+                </div>
+
+                {/* Email */}
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="email" className="text-sm font-medium text-neutral-300">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    required
+                    placeholder="votre@email.com"
+                    className="rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-neutral-500 outline-none transition-all focus:border-white/25 focus:ring-1 focus:ring-white/25"
+                  />
+                </div>
+              </div>
+
+              {/* Sujet */}
+              <div className="flex flex-col gap-2">
+                <label htmlFor="subject" className="text-sm font-medium text-neutral-300">
+                  Sujet
+                </label>
+                <select
+                  name="subject"
+                  id="subject"
+                  className="rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition-all focus:border-white/25 focus:ring-1 focus:ring-white/25 appearance-none"
+                >
+                  <option value="Collaboration">Collaboration</option>
+                  <option value="Achat d'un projet">Achat d&apos;un projet</option>
+                  <option value="Question">Question</option>
+                  <option value="Autre">Autre</option>
+                </select>
+              </div>
+
+              {/* Message */}
+              <div className="flex flex-col gap-2">
+                <label htmlFor="message" className="text-sm font-medium text-neutral-300">
+                  Message
+                </label>
+                <textarea
+                  name="message"
+                  id="message"
+                  required
+                  rows={5}
+                  placeholder="Votre message..."
+                  className="rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-neutral-500 outline-none transition-all focus:border-white/25 focus:ring-1 focus:ring-white/25 resize-none"
+                />
+              </div>
+
+              {/* Submit */}
+              <button
+                type="submit"
+                className="w-full rounded-full bg-white px-8 py-3.5 text-sm font-semibold text-black transition-all hover:bg-neutral-200 hover:shadow-lg hover:shadow-white/10"
+              >
+                Envoyer le message
+              </button>
+            </form>
+          </div>
+
+          {/* WhatsApp + Email buttons */}
+          <div className="animate-fade-in-up delay-400 mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             {/* WhatsApp */}
             <a
               href="https://wa.me/41794517496"

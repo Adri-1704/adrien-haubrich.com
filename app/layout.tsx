@@ -13,12 +13,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://adrien-haubrich.com"),
   title: "Adrien Haubrich — Entrepreneur Digital Suisse",
   description:
     "Portfolio d'Adrien Haubrich, entrepreneur digital suisse. Fondateur de 8 projets : Yattoo, OnVousTrouve.ch, L'Atelier Suisse, FunkyFeet, Just-Tag, Signature Locale et Glariade.",
   keywords: [
     "Adrien Haubrich",
     "entrepreneur digital",
+    "portfolio",
+    "digital",
     "Suisse",
     "Valais",
     "Le Bouveret",
@@ -28,14 +31,40 @@ export const metadata: Metadata = {
     "FunkyFeet",
     "Just-Tag",
     "Signature Locale",
+    "Glariade",
   ],
   authors: [{ name: "Adrien Haubrich" }],
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  alternates: {
+    canonical: "https://adrien-haubrich.com",
+  },
   openGraph: {
     title: "Adrien Haubrich — Entrepreneur Digital Suisse",
     description:
       "Fondateur de 8 projets digitaux en Suisse. Produits SaaS, e-commerce et solutions locales.",
+    url: "https://adrien-haubrich.com",
+    siteName: "Adrien Haubrich",
     locale: "fr_CH",
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Adrien Haubrich — Entrepreneur Digital Suisse",
+    description:
+      "Fondateur de 8 projets digitaux en Suisse. Produits SaaS, e-commerce et solutions locales.",
+  },
+  verification: {
+    google: "GOOGLE_VERIFICATION_CODE",
   },
 };
 
