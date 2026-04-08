@@ -68,7 +68,7 @@ const projects = [
     forSale: true,
   },
   {
-    name: "MerciInternet.ch",
+    name: "Merciinternet.ch",
     url: "https://merciinternet.ch",
     description:
       "App de gestion de budget pensée pour la Suisse. Catégories suisses, scan de tickets, revenus par personne.",
