@@ -248,6 +248,50 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ==================== DOMAINS FOR SALE ==================== */}
+      <section className="border-t border-white/5 py-16">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="mb-12 text-center">
+            <p className="animate-fade-in mb-4 text-sm font-medium uppercase tracking-[0.3em] text-neutral-500">
+              Noms de domaine
+            </p>
+            <h2 className="animate-fade-in-up delay-100 text-4xl font-bold tracking-tight sm:text-5xl">
+              Domaines à vendre
+            </h2>
+            <p className="animate-fade-in-up delay-200 mx-auto mt-4 max-w-xl text-neutral-400">
+              Des noms de domaine premium disponibles à l&apos;achat.
+            </p>
+          </div>
+          <div className="mx-auto max-w-2xl space-y-3">
+            {[
+              "lecadeaupersonnalise.fr",
+              "leterroirsuisse.ch",
+              "mangerfacile.ch",
+              "mangerfacile.app",
+              "manhattanhotdog.ch",
+              "meilleurrestaurant.ch",
+              "merciinternet.ch",
+            ].map((domain, index) => (
+              <div
+                key={domain}
+                className="animate-fade-in-up flex items-center justify-between rounded-xl border border-white/5 bg-[#111111] px-6 py-4 transition-all hover:border-white/10"
+                style={{ animationDelay: `${index * 80}ms` }}
+              >
+                <span className="font-medium text-white">{domain}</span>
+                <a
+                  href={`https://wa.me/41794517496?text=Bonjour%2C%20je%20suis%20int%C3%A9ress%C3%A9%20par%20le%20nom%20de%20domaine%20${domain}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="shrink-0 rounded-full border border-red-500/50 bg-red-500/10 px-4 py-1.5 text-xs font-semibold text-red-400 transition-all hover:bg-red-500 hover:text-white"
+                >
+                  Faire une offre
+                </a>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ==================== STATS ==================== */}
       <section className="border-y border-white/5 py-12">
         <div className="mx-auto max-w-6xl px-6">
