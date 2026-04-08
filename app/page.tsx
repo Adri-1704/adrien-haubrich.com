@@ -67,10 +67,18 @@ const projects = [
     color: "#b45309",
     forSale: true,
   },
+  {
+    name: "MerciInternet.ch",
+    url: "https://merciinternet.ch",
+    description:
+      "App de gestion de budget pensée pour la Suisse. Catégories suisses, scan de tickets, revenus par personne.",
+    type: "App Budget",
+    color: "#7C3AED",
+  },
 ];
 
 const stats = [
-  { value: "8", label: "Projets actifs" },
+  { value: "9", label: "Projets actifs" },
   { value: "4", label: "Secteurs" },
   { value: "100%", label: "Suisse" },
   { value: "2017", label: "Depuis" },
@@ -169,7 +177,7 @@ export default function Home() {
               Mes projets
             </h2>
             <p className="animate-fade-in-up delay-200 mx-auto mt-4 max-w-xl text-neutral-400">
-              8 projets actifs couvrant le SaaS, le e-commerce, les services web
+              9 projets actifs couvrant le SaaS, le e-commerce, les services web
               et les plateformes locales.
             </p>
           </div>
@@ -331,7 +339,7 @@ export default function Home() {
                   suisses à se développer.
                 </p>
                 <p>
-                  Avec 8 projets actifs couvrant le SaaS, le e-commerce, les
+                  Avec 9 projets actifs couvrant le SaaS, le e-commerce, les
                   services web et les plateformes locales, mon objectif est de
                   construire un écosystème digital au service de la Suisse.
                 </p>
