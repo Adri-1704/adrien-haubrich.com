@@ -39,15 +39,33 @@ function formatCHF(amount: number): string {
 
 export default function Admin() {
   const [password, setPassword] = useState("");
-  const [authenticated, setAuthenticated] = useState(false);
+  const [authenticated, setAuthenticated] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return sessionStorage.getItem("ah-admin-auth") === "1";
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [stripeData, setStripeData] = useState<StripeData | null>(null);
+  const [stripeData, setStripeData] = useState<StripeData | null>(() => {
+    if (typeof window === "undefined") return null;
+    try {
+      const saved = sessionStorage.getItem("ah-admin-stripe");
+      if (saved) return JSON.parse(saved);
+    } catch { /* ignore */ }
+    return null;
+  });
   const [manualProjects, setManualProjects] = useState<ManualProject[]>(() => {
     if (typeof window === "undefined") return PROJECTS;
     try {
       const saved = localStorage.getItem("ah-admin-manual");
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed = JSON.parse(saved) as ManualProject[];
+        // Merge: keep saved data but add any new projects from PROJECTS
+        const merged = PROJECTS.map((def) => {
+          const existing = parsed.find((p) => p.name === def.name);
+          return existing ? { ...def, monthRevenue: existing.monthRevenue, monthExpenses: existing.monthExpenses, notes: existing.notes } : def;
+        });
+        return merged;
+      }
     } catch { /* ignore */ }
     return PROJECTS;
   });
@@ -65,6 +83,8 @@ export default function Admin() {
       if (!res.ok) { setError(data.error || "Erreur"); setLoading(false); return; }
       setStripeData(data.stripe);
       setAuthenticated(true);
+      sessionStorage.setItem("ah-admin-auth", "1");
+      sessionStorage.setItem("ah-admin-stripe", JSON.stringify(data.stripe));
     } catch {
       setError("Erreur de connexion");
     } finally {
@@ -123,7 +143,7 @@ export default function Admin() {
       <header className="border-b border-white/5 px-6 py-4">
         <div className="mx-auto flex max-w-7xl items-center justify-between">
           <h1 className="text-lg font-bold">Admin — Adrien Haubrich</h1>
-          <button onClick={() => setAuthenticated(false)} className="text-sm text-neutral-500 hover:text-white">
+          <button onClick={() => { setAuthenticated(false); sessionStorage.removeItem("ah-admin-auth"); sessionStorage.removeItem("ah-admin-stripe"); }} className="text-sm text-neutral-500 hover:text-white">
             Déconnexion
           </button>
         </div>
