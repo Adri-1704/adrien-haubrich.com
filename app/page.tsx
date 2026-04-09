@@ -24,6 +24,13 @@ const sections = [
         type: "Agence web B2B",
         color: "#1e40af",
       },
+      {
+        name: "Just-Tag.ch",
+        url: "https://just-tag.ch",
+        description: "Plateforme qui met en avant les meilleurs endroits où manger et sortir en Suisse.",
+        type: "Plateforme locale",
+        color: "#ea580c",
+      },
     ],
   },
   {
@@ -59,13 +66,6 @@ const sections = [
     title: "Sites vitrine",
     subtitle: "Plateformes locales et sites de contenu",
     projects: [
-      {
-        name: "Just-Tag.ch",
-        url: "https://just-tag.ch",
-        description: "Plateforme qui met en avant les meilleurs endroits où manger et sortir en Suisse.",
-        type: "Plateforme locale",
-        color: "#ea580c",
-      },
       {
         name: "SignatureLocale.ch",
         url: "https://signaturelocale.ch",
