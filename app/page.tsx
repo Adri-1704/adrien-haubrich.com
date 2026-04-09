@@ -1,79 +1,88 @@
-const projects = [
+const sections = [
   {
-    name: "Yattoo.io",
-    url: "https://yattoo.io",
-    description:
-      "App mobile et web qui permet de faire des économies sur ses courses, réduire sa charge mentale et le gaspillage alimentaire.",
-    type: "SaaS B2C",
-    color: "#22c55e",
+    title: "SaaS",
+    subtitle: "Applications web et mobile en abonnement",
+    projects: [
+      {
+        name: "Yattoo.io",
+        url: "https://yattoo.io",
+        description: "App mobile et web qui permet de faire des économies sur ses courses, réduire sa charge mentale et le gaspillage alimentaire.",
+        type: "SaaS B2C",
+        color: "#22c55e",
+      },
+      {
+        name: "Merciinternet.ch",
+        url: "https://merciinternet.ch",
+        description: "La compta simplifiée pour les indépendants suisses. Scan de factures, export fiduciaire, suivi des dépenses.",
+        type: "SaaS B2B",
+        color: "#7C3AED",
+      },
+      {
+        name: "OnVousTrouve.ch",
+        url: "https://onvoustrouve.ch",
+        description: "Permet aux commerçants locaux de se faire voir sur internet en leur créant un site professionnel.",
+        type: "Agence web B2B",
+        color: "#1e40af",
+      },
+    ],
   },
   {
-    name: "OnVousTrouve.ch",
-    url: "https://onvoustrouve.ch",
-    description:
-      "Permet aux commerçants locaux de se faire voir sur internet en leur créant un site professionnel.",
-    type: "Agence web B2B",
-    color: "#1e40af",
+    title: "E-commerce",
+    subtitle: "Boutiques en ligne et vente de produits",
+    projects: [
+      {
+        name: "FunkyFeet.ch",
+        url: "https://funkyfeet.ch",
+        description: "Boutique en ligne spécialisée dans la vente de chaussettes originales et de qualité.",
+        type: "E-commerce B2C",
+        color: "#7c3aed",
+      },
+      {
+        name: "LatelierSuisse.ch",
+        url: "https://lateliersuisse.ch",
+        description: "E-commerce spécialisé dans la personnalisation sur textiles et objets pour particuliers.",
+        type: "E-commerce B2C",
+        color: "#dc2626",
+        forSale: true,
+      },
+      {
+        name: "LatelierSuisse.co",
+        url: "https://lateliersuisse.co",
+        description: "Personnalisation sur textiles et objets pour entreprises. Solutions sur mesure en volume.",
+        type: "E-commerce B2B",
+        color: "#991b1b",
+        forSale: true,
+      },
+    ],
   },
   {
-    name: "LatelierSuisse.ch",
-    url: "https://lateliersuisse.ch",
-    description:
-      "E-commerce spécialisé dans la personnalisation sur textiles et objets pour particuliers.",
-    type: "E-commerce B2C",
-    color: "#dc2626",
-    forSale: true,
-  },
-  {
-    name: "LatelierSuisse.co",
-    url: "https://lateliersuisse.co",
-    description:
-      "Personnalisation sur textiles et objets pour entreprises. Solutions sur mesure en volume.",
-    type: "E-commerce B2B",
-    color: "#991b1b",
-    forSale: true,
-  },
-  {
-    name: "FunkyFeet.ch",
-    url: "https://funkyfeet.ch",
-    description:
-      "Boutique en ligne spécialisée dans la vente de chaussettes originales et de qualité.",
-    type: "E-commerce B2C",
-    color: "#7c3aed",
-  },
-  {
-    name: "Just-Tag.ch",
-    url: "https://just-tag.ch",
-    description:
-      "Plateforme qui met en avant les meilleurs endroits où manger et sortir en Suisse.",
-    type: "Plateforme locale",
-    color: "#ea580c",
-  },
-  {
-    name: "SignatureLocale.ch",
-    url: "https://signaturelocale.ch",
-    description:
-      "Permet aux commerces locaux suisses de mettre en avant leur établissement auprès de leur communauté.",
-    type: "Annuaire local",
-    color: "#0d9488",
-    forSale: true,
-  },
-  {
-    name: "Glariade.ch",
-    url: "https://glariade.ch",
-    description:
-      "Site spécialisé dans la fameuse recette de la Glariade, un incontournable de la gastronomie suisse.",
-    type: "Site culinaire",
-    color: "#b45309",
-    forSale: true,
-  },
-  {
-    name: "Merciinternet.ch",
-    url: "https://merciinternet.ch",
-    description:
-      "App de gestion de budget pensée pour la Suisse. Catégories suisses, scan de tickets, revenus par personne.",
-    type: "App Budget",
-    color: "#7C3AED",
+    title: "Sites vitrine",
+    subtitle: "Plateformes locales et sites de contenu",
+    projects: [
+      {
+        name: "Just-Tag.ch",
+        url: "https://just-tag.ch",
+        description: "Plateforme qui met en avant les meilleurs endroits où manger et sortir en Suisse.",
+        type: "Plateforme locale",
+        color: "#ea580c",
+      },
+      {
+        name: "SignatureLocale.ch",
+        url: "https://signaturelocale.ch",
+        description: "Permet aux commerces locaux suisses de mettre en avant leur établissement auprès de leur communauté.",
+        type: "Annuaire local",
+        color: "#0d9488",
+        forSale: true,
+      },
+      {
+        name: "Glariade.ch",
+        url: "https://glariade.ch",
+        description: "Site spécialisé dans la fameuse recette de la Glariade, un incontournable de la gastronomie suisse.",
+        type: "Site culinaire",
+        color: "#b45309",
+        forSale: true,
+      },
+    ],
   },
 ];
 
@@ -177,80 +186,65 @@ export default function Home() {
               Mes projets
             </h2>
             <p className="animate-fade-in-up delay-200 mx-auto mt-4 max-w-xl text-neutral-400">
-              9 projets actifs couvrant le SaaS, le e-commerce, les services web
-              et les plateformes locales.
+              9 projets actifs couvrant le SaaS, le e-commerce et les sites vitrine.
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2">
-            {projects.map((project, index) => (
-              <a
-                key={project.name}
-                href={project.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`animate-fade-in-up delay-${(index + 2) * 100} card-glow group relative overflow-hidden rounded-2xl border border-white/5 bg-[#111111] p-8 transition-all hover:border-white/10`}
-                style={{
-                  animationDelay: `${(index + 2) * 100}ms`,
-                }}
-              >
-                {/* Colored left border accent */}
-                <div
-                  className="absolute left-0 top-0 h-full w-1 transition-all group-hover:w-1.5"
-                  style={{ backgroundColor: project.color }}
-                />
-
-                {/* Hover glow effect */}
-                <div
-                  className="pointer-events-none absolute -right-20 -top-20 h-40 w-40 rounded-full opacity-0 blur-3xl transition-opacity group-hover:opacity-20"
-                  style={{ backgroundColor: project.color }}
-                />
-
-                <div className="relative">
-                  <div className="mb-4 flex items-start justify-between">
-                    <h3 className="text-xl font-bold text-white">
-                      {project.name}
-                    </h3>
-                    <span
-                      className="shrink-0 rounded-full px-3 py-1 text-xs font-medium"
-                      style={{
-                        backgroundColor: `${project.color}15`,
-                        color: project.color,
-                      }}
-                    >
-                      {project.type}
-                    </span>
-                  </div>
-
-                  <p className="mb-6 text-sm leading-relaxed text-neutral-400">
-                    {project.description}
-                  </p>
-
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-sm font-medium text-neutral-500 transition-colors group-hover:text-white">
-                      <span>Visiter le site</span>
-                      <svg
-                        className="h-4 w-4 transition-transform group-hover:translate-x-1"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={2}
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M17 8l4 4m0 0l-4 4m4-4H3"
-                        />
-                      </svg>
-                    </div>
-                    {project.forSale && (
-                      <span className="rounded border border-red-500 bg-red-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-red-500">
-                        A vendre
-                      </span>
-                    )}
-                  </div>
+          <div className="space-y-16">
+            {sections.map((section, sectionIndex) => (
+              <div key={section.title}>
+                <div className="mb-6 flex items-center gap-4">
+                  <h3 className="text-2xl font-bold text-white">{section.title}</h3>
+                  <div className="h-px flex-1 bg-white/10" />
+                  <span className="text-sm text-neutral-500">{section.subtitle}</span>
                 </div>
-              </a>
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                  {section.projects.map((project, index) => (
+                    <a
+                      key={project.name}
+                      href={project.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="card-glow group relative overflow-hidden rounded-2xl border border-white/5 bg-[#111111] p-8 transition-all hover:border-white/10"
+                      style={{ animationDelay: `${(sectionIndex * 3 + index + 2) * 100}ms` }}
+                    >
+                      <div
+                        className="absolute left-0 top-0 h-full w-1 transition-all group-hover:w-1.5"
+                        style={{ backgroundColor: project.color }}
+                      />
+                      <div
+                        className="pointer-events-none absolute -right-20 -top-20 h-40 w-40 rounded-full opacity-0 blur-3xl transition-opacity group-hover:opacity-20"
+                        style={{ backgroundColor: project.color }}
+                      />
+                      <div className="relative">
+                        <div className="mb-4 flex items-start justify-between">
+                          <h3 className="text-xl font-bold text-white">{project.name}</h3>
+                          <span
+                            className="shrink-0 rounded-full px-3 py-1 text-xs font-medium"
+                            style={{ backgroundColor: `${project.color}15`, color: project.color }}
+                          >
+                            {project.type}
+                          </span>
+                        </div>
+                        <p className="mb-6 text-sm leading-relaxed text-neutral-400">{project.description}</p>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2 text-sm font-medium text-neutral-500 transition-colors group-hover:text-white">
+                            <span>Visiter le site</span>
+                            <svg className="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                            </svg>
+                          </div>
+                          {project.forSale && (
+                            <span className="rounded border border-red-500 bg-red-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-red-500">
+                              A vendre
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
         </div>
