@@ -248,8 +248,9 @@ export default function Admin() {
                     <label className="block text-[10px] text-neutral-500 mb-1">CA du mois (CHF)</label>
                     <input
                       type="number"
+                      min="0"
                       value={project.monthRevenue || ""}
-                      onChange={(e) => updateManualProject(i, "monthRevenue", parseFloat(e.target.value) || 0)}
+                      onChange={(e) => { const v = e.target.value; updateManualProject(i, "monthRevenue", v === "" ? 0 : Math.max(0, parseFloat(v) || 0)); }}
                       placeholder="0"
                       className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-emerald-400 font-semibold outline-none focus:border-emerald-500/50"
                     />
@@ -258,8 +259,9 @@ export default function Admin() {
                     <label className="block text-[10px] text-neutral-500 mb-1">Charges du mois (CHF)</label>
                     <input
                       type="number"
+                      min="0"
                       value={project.monthExpenses || ""}
-                      onChange={(e) => updateManualProject(i, "monthExpenses", parseFloat(e.target.value) || 0)}
+                      onChange={(e) => { const v = e.target.value; updateManualProject(i, "monthExpenses", v === "" ? 0 : Math.max(0, parseFloat(v) || 0)); }}
                       placeholder="0"
                       className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-red-400 font-semibold outline-none focus:border-red-500/50"
                     />
