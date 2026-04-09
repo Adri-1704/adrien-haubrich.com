@@ -288,8 +288,8 @@ export default function Admin() {
   }
 
   return (
-    <div className={`min-h-screen ${t.bg} ${t.text}`}>
-      <header className={`border-b ${t.header} px-6 py-4`}>
+    <div className={`min-h-screen ${t.bg} ${t.text} overflow-x-hidden`}>
+      <header className={`sticky top-0 z-40 border-b ${t.header} px-4 sm:px-6 py-3`}>
         <div className="mx-auto flex max-w-7xl items-center justify-between">
           <h1 className="text-lg font-bold">Admin — Adrien Haubrich</h1>
           <div className="flex items-center gap-3">
@@ -328,10 +328,10 @@ export default function Admin() {
         </div>
       </header>
 
-      <div className="mx-auto max-w-7xl px-6 py-8 space-y-8">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 py-6 space-y-6">
 
         {/* ─── Month Selector ─── */}
-        <div className="grid grid-cols-6 sm:grid-cols-12 gap-1.5">
+        <div className="grid grid-cols-4 sm:grid-cols-12 gap-1.5">
           {MONTH_NAMES.map((name, i) => {
             const hasData = Object.keys(allMonthsData[getMonthKey(currentYear, i)] || {}).length > 0;
             return (
@@ -357,7 +357,7 @@ export default function Admin() {
           <h2 className="mb-4 text-sm font-medium uppercase tracking-wider ${t.sub}">
             {MONTH_NAMES_FULL[selectedMonth]} {currentYear}
           </h2>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
             <div className={`rounded-xl border ${t.card} p-5`}>
               <p className={`text-xs ${t.sub} mb-1`}>CA projets</p>
               <p className="text-2xl font-bold text-emerald-400">{formatCHF(monthTotalRevenue)} <span className={`text-sm ${t.sub}`}>CHF</span></p>
@@ -388,7 +388,7 @@ export default function Admin() {
               <span className="inline-block h-2 w-2 rounded-full bg-emerald-400 mr-2" />
               Yattoo — Stripe (automatique)
             </h2>
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
               <div className="rounded-xl border ${t.card} p-4">
                 <p className="text-[10px] ${t.sub} mb-1">CA ce mois</p>
                 <p className="text-lg font-bold text-emerald-400">{formatCHF(stripeData.monthRevenue)}</p>
@@ -471,7 +471,7 @@ export default function Admin() {
                     <h3 className="text-sm font-bold ${t.text}">{project.name}</h3>
                     <span className="rounded-full border ${t.card} px-2 py-0.5 text-[10px] ${t.sub}">{project.type}</span>
                   </div>
-                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-4">
                     <div>
                       <label className="block text-[10px] ${t.sub} mb-1">CA (CHF)</label>
                       <input
@@ -520,7 +520,7 @@ export default function Admin() {
         {/* ─── Year Chart ─── */}
         <div className={`rounded-xl border ${t.card} p-5`}>
           <p className={`text-xs ${t.sub} mb-4`}>CA mensuel tous projets — {currentYear}</p>
-          <div className="flex items-end gap-2" style={{ height: 180 }}>
+          <div className="flex items-end gap-1 sm:gap-2 overflow-hidden" style={{ height: 180 }}>
             {monthlyRevenues.map((amount, i) => {
               const max = Math.max(...monthlyRevenues, 1);
               const barHeight = max > 0 ? Math.round((amount / max) * 140) : 0;
@@ -547,7 +547,7 @@ export default function Admin() {
         <div className={`rounded-xl border ${t.card} bg-gradient-to-r ${t.gradient} p-6 text-center`}>
           <p className={`text-xs ${t.sub} mb-3`}>Revenus totaux — {currentYear}</p>
           <p className="text-4xl font-extrabold text-emerald-400">{formatCHF(yearTotals.revenue + yearTotals.salary)} <span className={`text-lg ${t.sub}`}>CHF</span></p>
-          <div className="mt-4 grid grid-cols-4 gap-4 text-center">
+          <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-4 text-center">
             <div>
               <p className={`text-[10px] ${t.sub}`}>CA projets</p>
               <p className="text-sm font-bold text-emerald-400">{formatCHF(yearTotals.revenue)}</p>
