@@ -286,20 +286,23 @@ export default function Admin() {
           </div>
         </div>
 
-        {/* ─── Objectif ─── */}
-        <div className="rounded-xl border border-white/5 bg-[#111] p-6 text-center">
-          <p className="text-xs text-neutral-500 mb-2">Objectif : 10&apos;000 CHF / mois</p>
-          <div className="mx-auto max-w-md">
-            <div className="h-3 w-full overflow-hidden rounded-full bg-white/5">
-              <div
-                className="h-full rounded-full bg-gradient-to-r from-violet-600 to-emerald-500 transition-all"
-                style={{ width: `${Math.min((totalMonthRevenue / 10000) * 100, 100)}%` }}
-              />
+        {/* ─── CA Total ─── */}
+        <div className="rounded-xl border border-white/5 bg-gradient-to-r from-[#111] to-[#1a1a2e] p-6 text-center">
+          <p className="text-xs text-neutral-500 mb-3">Chiffre d&apos;affaires total — Ce mois</p>
+          <p className="text-4xl font-extrabold text-emerald-400">{formatCHF(totalMonthRevenue)} <span className="text-lg text-neutral-500">CHF</span></p>
+          <div className="mt-4 grid grid-cols-3 gap-4 text-center">
+            <div>
+              <p className="text-[10px] text-neutral-500">Stripe (Yattoo)</p>
+              <p className="text-sm font-bold text-white">{formatCHF(stripeMonthRevenue)}</p>
             </div>
-            <p className="mt-2 text-sm font-bold text-white">
-              {formatCHF(totalMonthRevenue)} / 10&apos;000 CHF
-              <span className="ml-2 text-neutral-500">({Math.round((totalMonthRevenue / 10000) * 100)}%)</span>
-            </p>
+            <div>
+              <p className="text-[10px] text-neutral-500">Autres projets</p>
+              <p className="text-sm font-bold text-white">{formatCHF(manualTotalRevenue)}</p>
+            </div>
+            <div>
+              <p className="text-[10px] text-neutral-500">Marge nette</p>
+              <p className={`text-sm font-bold ${totalMargin >= 0 ? "text-emerald-400" : "text-red-400"}`}>{formatCHF(totalMargin)}</p>
+            </div>
           </div>
         </div>
       </div>
