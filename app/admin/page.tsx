@@ -85,7 +85,7 @@ export default function Admin() {
   function updateProject(projectName: string, field: keyof ProjectData, value: number | string) {
     const updated = { ...monthData };
     if (!updated[projectName]) updated[projectName] = { revenue: 0, expenses: 0, notes: "" };
-    (updated[projectName] as Record<string, unknown>)[field] = value;
+    (updated[projectName] as unknown as Record<string, unknown>)[field] = value;
     setMonthData(updated);
     saveMonthData(selectedMonthKey, updated);
   }
