@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 
 const MONTH_NAMES_FULL = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
 const MONTH_NAMES = ["Jan", "Fév", "Mar", "Avr", "Mai", "Jun", "Jul", "Aoû", "Sep", "Oct", "Nov", "Déc"];
@@ -75,19 +75,71 @@ export default function Admin() {
   const [selectedMonth, setSelectedMonth] = useState(now.getMonth());
   const selectedMonthKey = getMonthKey(currentYear, selectedMonth);
 
-  const [monthData, setMonthData] = useState<Record<string, ProjectData>>(() => loadMonthData(getMonthKey(currentYear, now.getMonth())));
+  // All months data from server
+  const [allMonthsData, setAllMonthsData] = useState<Record<string, Record<string, ProjectData>>>({});
+  const [synced, setSynced] = useState(false);
+  const saveTimer = useRef<NodeJS.Timeout | null>(null);
+  const passwordRef = useRef("");
+
+  const monthData = allMonthsData[selectedMonthKey] || {};
+
+  // Load all data from Supabase on login
+  useEffect(() => {
+    if (!authenticated || synced) return;
+    fetch("/api/admin/data", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password: passwordRef.current || sessionStorage.getItem("ah-admin-pwd") || "", action: "load" }),
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.months) {
+          setAllMonthsData(data.months);
+          // Also cache locally
+          for (const [mk, d] of Object.entries(data.months)) {
+            saveMonthData(mk, d as Record<string, ProjectData>);
+          }
+        }
+        setSynced(true);
+      })
+      .catch(() => {
+        // Fallback to localStorage
+        const local: Record<string, Record<string, ProjectData>> = {};
+        for (let m = 0; m < 12; m++) {
+          const mk = getMonthKey(currentYear, m);
+          const d = loadMonthData(mk);
+          if (Object.keys(d).length > 0) local[mk] = d;
+        }
+        setAllMonthsData(local);
+        setSynced(true);
+      });
+  }, [authenticated, synced, currentYear]);
 
   const switchMonth = useCallback((month: number) => {
     setSelectedMonth(month);
-    setMonthData(loadMonthData(getMonthKey(currentYear, month)));
-  }, [currentYear]);
+  }, []);
+
+  function saveToServer(mk: string, data: Record<string, ProjectData>) {
+    const pwd = passwordRef.current || sessionStorage.getItem("ah-admin-pwd") || "";
+    fetch("/api/admin/data", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password: pwd, action: "save", monthKey: mk, data }),
+    }).catch(() => {});
+  }
 
   function updateProject(projectName: string, field: keyof ProjectData, value: number | string) {
     const updated = { ...monthData };
     if (!updated[projectName]) updated[projectName] = { revenue: 0, expenses: 0, notes: "" };
     (updated[projectName] as unknown as Record<string, unknown>)[field] = value;
-    setMonthData(updated);
+
+    const newAll = { ...allMonthsData, [selectedMonthKey]: updated };
+    setAllMonthsData(newAll);
     saveMonthData(selectedMonthKey, updated);
+
+    // Debounce save to server
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(() => saveToServer(selectedMonthKey, updated), 500);
   }
 
   function getProjectData(name: string): ProjectData {
@@ -102,7 +154,8 @@ export default function Admin() {
   // Year totals
   const yearTotals = { revenue: 0, expenses: 0 };
   for (let m = 0; m < 12; m++) {
-    const data = loadMonthData(getMonthKey(currentYear, m));
+    const mk = getMonthKey(currentYear, m);
+    const data = allMonthsData[mk] || {};
     for (const p of PROJECT_DEFS) {
       const pd = data[p.name];
       if (pd) {
@@ -114,7 +167,8 @@ export default function Admin() {
 
   // Monthly revenue breakdown for chart
   const monthlyRevenues = Array.from({ length: 12 }, (_, m) => {
-    const data = loadMonthData(getMonthKey(currentYear, m));
+    const mk = getMonthKey(currentYear, m);
+    const data = allMonthsData[mk] || {};
     return PROJECT_DEFS.reduce((s, p) => s + (data[p.name]?.revenue || 0), 0);
   });
 
@@ -131,7 +185,9 @@ export default function Admin() {
       if (!res.ok) { setError(data.error || "Erreur"); setLoading(false); return; }
       setStripeData(data.stripe);
       setAuthenticated(true);
+      passwordRef.current = password;
       sessionStorage.setItem("ah-admin-auth", "1");
+      sessionStorage.setItem("ah-admin-pwd", password);
       sessionStorage.setItem("ah-admin-stripe", JSON.stringify(data.stripe));
     } catch {
       setError("Erreur de connexion");
@@ -170,7 +226,7 @@ export default function Admin() {
       <header className="border-b border-white/5 px-6 py-4">
         <div className="mx-auto flex max-w-7xl items-center justify-between">
           <h1 className="text-lg font-bold">Admin — Adrien Haubrich</h1>
-          <button onClick={() => { setAuthenticated(false); sessionStorage.removeItem("ah-admin-auth"); sessionStorage.removeItem("ah-admin-stripe"); }} className="text-sm text-neutral-500 hover:text-white">
+          <button onClick={() => { setAuthenticated(false); setSynced(false); sessionStorage.removeItem("ah-admin-auth"); sessionStorage.removeItem("ah-admin-pwd"); sessionStorage.removeItem("ah-admin-stripe"); }} className="text-sm text-neutral-500 hover:text-white">
             Déconnexion
           </button>
         </div>
@@ -181,7 +237,7 @@ export default function Admin() {
         {/* ─── Month Selector ─── */}
         <div className="grid grid-cols-6 sm:grid-cols-12 gap-1.5">
           {MONTH_NAMES.map((name, i) => {
-            const hasData = Object.keys(loadMonthData(getMonthKey(currentYear, i))).length > 0;
+            const hasData = Object.keys(allMonthsData[getMonthKey(currentYear, i)] || {}).length > 0;
             return (
               <button
                 key={i}
