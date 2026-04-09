@@ -89,7 +89,8 @@ export async function POST(request: Request) {
       },
     });
   } catch (error) {
-    console.error("Admin API error:", error);
-    return Response.json({ error: "Erreur serveur" }, { status: 500 });
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error("Admin API error:", msg);
+    return Response.json({ error: `Erreur: ${msg}` }, { status: 500 });
   }
 }
