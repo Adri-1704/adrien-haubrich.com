@@ -25,8 +25,8 @@ const sections = [
         color: "#1e40af",
       },
       {
-        name: "Just-Tag.ch",
-        url: "https://just-tag.ch",
+        name: "Just-Tag.app",
+        url: "https://just-tag.app",
         description: "Plateforme qui met en avant les meilleurs endroits où manger et sortir en Suisse.",
         type: "Plateforme locale",
         color: "#ea580c",
