@@ -202,13 +202,21 @@ export default function Admin() {
     return monthData[name] || { revenue: 0, expenses: 0, notes: "" };
   }
 
+  const salaryData = getProjectData("__salary__");
+
+  function updateSalary(field: keyof ProjectData, value: number | string) {
+    updateProject("__salary__", field, value);
+  }
+
   // Totals for selected month
   const monthTotalRevenue = PROJECT_DEFS.reduce((s, p) => s + getProjectData(p.name).revenue, 0);
   const monthTotalExpenses = PROJECT_DEFS.reduce((s, p) => s + getProjectData(p.name).expenses, 0);
-  const monthMargin = monthTotalRevenue - monthTotalExpenses;
+  const monthSalary = salaryData.revenue;
+  const monthTotalIncome = monthTotalRevenue + monthSalary;
+  const monthMargin = monthTotalIncome - monthTotalExpenses;
 
   // Year totals
-  const yearTotals = { revenue: 0, expenses: 0 };
+  const yearTotals = { revenue: 0, expenses: 0, salary: 0 };
   for (let m = 0; m < 12; m++) {
     const mk = getMonthKey(currentYear, m);
     const data = allMonthsData[mk] || {};
@@ -219,6 +227,8 @@ export default function Admin() {
         yearTotals.expenses += pd.expenses || 0;
       }
     }
+    const sal = data["__salary__"];
+    if (sal) yearTotals.salary += sal.revenue || 0;
   }
 
   // Monthly revenue breakdown for chart
@@ -347,22 +357,26 @@ export default function Admin() {
           <h2 className="mb-4 text-sm font-medium uppercase tracking-wider ${t.sub}">
             {MONTH_NAMES_FULL[selectedMonth]} {currentYear}
           </h2>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            <div className="rounded-xl border ${t.card} p-5">
-              <p className="text-xs ${t.sub} mb-1">CA du mois</p>
-              <p className="text-2xl font-bold text-emerald-400">{formatCHF(monthTotalRevenue)} <span className="text-sm text-neutral-500">CHF</span></p>
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">
+            <div className={`rounded-xl border ${t.card} p-5`}>
+              <p className={`text-xs ${t.sub} mb-1`}>CA projets</p>
+              <p className="text-2xl font-bold text-emerald-400">{formatCHF(monthTotalRevenue)} <span className={`text-sm ${t.sub}`}>CHF</span></p>
             </div>
-            <div className="rounded-xl border ${t.card} p-5">
-              <p className="text-xs ${t.sub} mb-1">Charges du mois</p>
-              <p className="text-2xl font-bold text-red-400">{formatCHF(monthTotalExpenses)} <span className="text-sm text-neutral-500">CHF</span></p>
+            <div className={`rounded-xl border ${t.card} p-5`}>
+              <p className={`text-xs ${t.sub} mb-1`}>Salaire</p>
+              <p className="text-2xl font-bold text-blue-400">{formatCHF(monthSalary)} <span className={`text-sm ${t.sub}`}>CHF</span></p>
             </div>
-            <div className="rounded-xl border ${t.card} p-5">
-              <p className="text-xs ${t.sub} mb-1">Marge</p>
-              <p className={`text-2xl font-bold ${monthMargin >= 0 ? "text-emerald-400" : "text-red-400"}`}>{formatCHF(monthMargin)} <span className="text-sm text-neutral-500">CHF</span></p>
+            <div className={`rounded-xl border ${t.card} p-5`}>
+              <p className={`text-xs ${t.sub} mb-1`}>Charges</p>
+              <p className="text-2xl font-bold text-red-400">{formatCHF(monthTotalExpenses)} <span className={`text-sm ${t.sub}`}>CHF</span></p>
             </div>
-            <div className="rounded-xl border ${t.card} p-5">
-              <p className="text-xs ${t.sub} mb-1">CA annuel {currentYear}</p>
-              <p className="text-2xl font-bold text-white">{formatCHF(yearTotals.revenue)} <span className="text-sm text-neutral-500">CHF</span></p>
+            <div className={`rounded-xl border ${t.card} p-5`}>
+              <p className={`text-xs ${t.sub} mb-1`}>Revenu total</p>
+              <p className={`text-2xl font-bold ${monthMargin >= 0 ? "text-emerald-400" : "text-red-400"}`}>{formatCHF(monthMargin)} <span className={`text-sm ${t.sub}`}>CHF</span></p>
+            </div>
+            <div className={`rounded-xl border ${t.card} p-5`}>
+              <p className={`text-xs ${t.sub} mb-1`}>Annuel {currentYear}</p>
+              <p className={`text-2xl font-bold ${t.text}`}>{formatCHF(yearTotals.revenue + yearTotals.salary)} <span className={`text-sm ${t.sub}`}>CHF</span></p>
             </div>
           </div>
         </div>
@@ -402,6 +416,44 @@ export default function Admin() {
             </div>
           </div>
         )}
+
+        {/* ─── Salary ─── */}
+        <div className={`rounded-xl border ${t.card} p-5`}>
+          <div className="flex items-center gap-3 mb-4">
+            <div className="h-3 w-3 rounded-full bg-blue-500" />
+            <h3 className={`text-sm font-bold ${t.text}`}>Salaire</h3>
+            <span className={`rounded-full border ${t.card} px-2 py-0.5 text-[10px] ${t.sub}`}>Emploi (depuis Avril 2026)</span>
+          </div>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            <div>
+              <label className={`block text-[10px] ${t.sub} mb-1`}>Salaire net (CHF)</label>
+              <input
+                type="number"
+                min="0"
+                value={salaryData.revenue || ""}
+                onChange={(e) => updateSalary("revenue", Math.max(0, parseFloat(e.target.value) || 0))}
+                placeholder="0"
+                className={`w-full rounded-lg border ${t.inputGreen} px-3 py-2 text-sm font-semibold outline-none`}
+              />
+            </div>
+            <div>
+              <label className={`block text-[10px] ${t.sub} mb-1`}>Notes</label>
+              <input
+                type="text"
+                value={salaryData.notes || ""}
+                onChange={(e) => updateSalary("notes", e.target.value)}
+                placeholder="..."
+                className={`w-full rounded-lg border ${t.inputNote} px-3 py-2 text-sm outline-none`}
+              />
+            </div>
+            <div>
+              <label className={`block text-[10px] ${t.sub} mb-1`}>Total annuel</label>
+              <div className={`rounded-lg border ${t.card} px-3 py-2 text-sm font-semibold text-blue-400`}>
+                {formatCHF(yearTotals.salary)}
+              </div>
+            </div>
+          </div>
+        </div>
 
         {/* ─── Projects for selected month ─── */}
         <div>
@@ -491,18 +543,26 @@ export default function Admin() {
           </div>
         </div>
 
-        {/* ─── CA Total ─── */}
+        {/* ─── Revenus Total ─── */}
         <div className={`rounded-xl border ${t.card} bg-gradient-to-r ${t.gradient} p-6 text-center`}>
-          <p className="text-xs text-neutral-500 mb-3">Chiffre d&apos;affaires total — {currentYear}</p>
-          <p className="text-4xl font-extrabold text-emerald-400">{formatCHF(yearTotals.revenue)} <span className="text-lg text-neutral-500">CHF</span></p>
-          <div className="mt-4 grid grid-cols-2 gap-4 text-center">
+          <p className={`text-xs ${t.sub} mb-3`}>Revenus totaux — {currentYear}</p>
+          <p className="text-4xl font-extrabold text-emerald-400">{formatCHF(yearTotals.revenue + yearTotals.salary)} <span className={`text-lg ${t.sub}`}>CHF</span></p>
+          <div className="mt-4 grid grid-cols-4 gap-4 text-center">
             <div>
-              <p className="text-[10px] text-neutral-500">Charges totales</p>
+              <p className={`text-[10px] ${t.sub}`}>CA projets</p>
+              <p className="text-sm font-bold text-emerald-400">{formatCHF(yearTotals.revenue)}</p>
+            </div>
+            <div>
+              <p className={`text-[10px] ${t.sub}`}>Salaires</p>
+              <p className="text-sm font-bold text-blue-400">{formatCHF(yearTotals.salary)}</p>
+            </div>
+            <div>
+              <p className={`text-[10px] ${t.sub}`}>Charges totales</p>
               <p className="text-sm font-bold text-red-400">{formatCHF(yearTotals.expenses)}</p>
             </div>
             <div>
-              <p className="text-[10px] text-neutral-500">Marge nette annuelle</p>
-              <p className={`text-sm font-bold ${yearTotals.revenue - yearTotals.expenses >= 0 ? "text-emerald-400" : "text-red-400"}`}>{formatCHF(yearTotals.revenue - yearTotals.expenses)}</p>
+              <p className={`text-[10px] ${t.sub}`}>Bénéfice net</p>
+              <p className={`text-sm font-bold ${yearTotals.revenue + yearTotals.salary - yearTotals.expenses >= 0 ? "text-emerald-400" : "text-red-400"}`}>{formatCHF(yearTotals.revenue + yearTotals.salary - yearTotals.expenses)}</p>
             </div>
           </div>
         </div>
