@@ -30,6 +30,7 @@ const PROJECTS: ManualProject[] = [
   { name: "LatelierSuisse.co (B2B)", color: "#991b1b", type: "Factures", monthRevenue: 0, monthExpenses: 0, notes: "" },
   { name: "Merciinternet.ch", color: "#7C3AED", type: "SaaS (bientôt)", monthRevenue: 0, monthExpenses: 0, notes: "" },
   { name: "OnVousTrouve.ch", color: "#1e40af", type: "Agence web", monthRevenue: 0, monthExpenses: 0, notes: "" },
+  { name: "Just-Tag.ch", color: "#ea580c", type: "Plateforme locale", monthRevenue: 0, monthExpenses: 0, notes: "" },
 ];
 
 function formatCHF(amount: number): string {
