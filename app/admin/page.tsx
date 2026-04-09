@@ -172,9 +172,10 @@ export default function Admin() {
   }, [authenticated, synced, currentYear]);
 
   const switchMonth = useCallback((month: number) => {
-    const scrollY = window.scrollY;
     setSelectedMonth(month);
-    setTimeout(() => window.scrollTo({ top: scrollY, behavior: "instant" as ScrollBehavior }), 0);
+    // Scroll to month selector to keep view stable
+    document.getElementById("month-selector")?.scrollIntoView({ behavior: "instant" as ScrollBehavior, block: "start" });
+
   }, [currentYear]);
 
   function saveToServer(mk: string, data: Record<string, ProjectData>) {
@@ -333,7 +334,7 @@ export default function Admin() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-6 space-y-6">
 
         {/* ─── Month Selector ─── */}
-        <div className="grid grid-cols-4 sm:grid-cols-12 gap-1.5">
+        <div id="month-selector" className="grid grid-cols-4 sm:grid-cols-12 gap-1.5 scroll-mt-16">
           {MONTH_NAMES.map((name, i) => {
             const hasData = Object.keys(allMonthsData[getMonthKey(currentYear, i)] || {}).length > 0;
             return (
