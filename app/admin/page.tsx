@@ -173,9 +173,6 @@ export default function Admin() {
 
   const switchMonth = useCallback((month: number) => {
     setSelectedMonth(month);
-    // Scroll to month selector to keep view stable
-    document.getElementById("month-selector")?.scrollIntoView({ behavior: "instant" as ScrollBehavior, block: "start" });
-
   }, [currentYear]);
 
   function saveToServer(mk: string, data: Record<string, ProjectData>) {
@@ -534,7 +531,7 @@ export default function Admin() {
                   onClick={() => switchMonth(i)}
                   className="flex-1 flex flex-col items-center justify-end h-full"
                 >
-                  <span className={`text-[9px] ${t.sub} mb-1`}>{amount > 0 ? formatCHF(amount).split(",")[0] : ""}</span>
+                  <span className={`text-[9px] ${t.sub} mb-1 h-3`}>{amount > 0 ? formatCHF(amount).split(",")[0] : "\u00A0"}</span>
                   <div
                     className={`w-full rounded-t-md transition-all ${isSelected ? "bg-emerald-500" : amount > 0 ? (darkMode ? "bg-emerald-500/30" : "bg-emerald-200") : (darkMode ? "bg-white/5" : "bg-gray-100")}`}
                     style={{ height: Math.max(barHeight, 4) }}
