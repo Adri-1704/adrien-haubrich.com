@@ -115,33 +115,57 @@ export default function Admin() {
 
   const monthData = allMonthsData[selectedMonthKey] || {};
 
-  // Load all data from Supabase on login
+  // Load localStorage data
+  function loadAllLocal(): Record<string, Record<string, ProjectData>> {
+    const local: Record<string, Record<string, ProjectData>> = {};
+    for (let m = 0; m < 12; m++) {
+      const mk = getMonthKey(currentYear, m);
+      const d = loadMonthData(mk);
+      if (Object.keys(d).length > 0) local[mk] = d;
+    }
+    return local;
+  }
+
+  // Load data: merge localStorage + Supabase (localStorage wins if Supabase is empty)
   useEffect(() => {
     if (!authenticated || synced) return;
+    const local = loadAllLocal();
+    const pwd = passwordRef.current || sessionStorage.getItem("ah-admin-pwd") || "";
+
     fetch("/api/admin/data", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password: passwordRef.current || sessionStorage.getItem("ah-admin-pwd") || "", action: "load" }),
+      body: JSON.stringify({ password: pwd, action: "load" }),
     })
       .then((r) => r.json())
       .then((data) => {
-        if (data.months) {
-          setAllMonthsData(data.months);
-          // Also cache locally
-          for (const [mk, d] of Object.entries(data.months)) {
-            saveMonthData(mk, d as Record<string, ProjectData>);
+        const remote = (data.months || {}) as Record<string, Record<string, ProjectData>>;
+        const hasRemote = Object.keys(remote).length > 0;
+        const hasLocal = Object.keys(local).length > 0;
+
+        if (hasRemote) {
+          // Merge: remote wins, but fill gaps with local
+          const merged = { ...local, ...remote };
+          setAllMonthsData(merged);
+          // Cache merged data locally
+          for (const [mk, d] of Object.entries(merged)) {
+            saveMonthData(mk, d);
+          }
+        } else if (hasLocal) {
+          // Supabase is empty, use local and sync up
+          setAllMonthsData(local);
+          // Upload local data to Supabase
+          for (const [mk, d] of Object.entries(local)) {
+            fetch("/api/admin/data", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ password: pwd, action: "save", monthKey: mk, data: d }),
+            }).catch(() => {});
           }
         }
         setSynced(true);
       })
       .catch(() => {
-        // Fallback to localStorage
-        const local: Record<string, Record<string, ProjectData>> = {};
-        for (let m = 0; m < 12; m++) {
-          const mk = getMonthKey(currentYear, m);
-          const d = loadMonthData(mk);
-          if (Object.keys(d).length > 0) local[mk] = d;
-        }
         setAllMonthsData(local);
         setSynced(true);
       });
