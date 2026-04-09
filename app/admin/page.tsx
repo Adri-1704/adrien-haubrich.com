@@ -518,25 +518,25 @@ export default function Admin() {
         </div>
 
         {/* ─── Year Chart ─── */}
-        <div className="rounded-xl border ${t.card} p-5">
-          <p className="text-xs text-neutral-500 mb-4">CA mensuel tous projets — {currentYear}</p>
-          <div className="flex items-end gap-1 h-40">
+        <div className={`rounded-xl border ${t.card} p-5`}>
+          <p className={`text-xs ${t.sub} mb-4`}>CA mensuel tous projets — {currentYear}</p>
+          <div className="flex items-end gap-2" style={{ height: 180 }}>
             {monthlyRevenues.map((amount, i) => {
               const max = Math.max(...monthlyRevenues, 1);
-              const height = max > 0 ? (amount / max) * 100 : 0;
+              const barHeight = max > 0 ? Math.round((amount / max) * 140) : 0;
               const isSelected = i === selectedMonth;
               return (
                 <button
                   key={i}
                   onClick={() => switchMonth(i)}
-                  className="flex-1 flex flex-col items-center gap-1"
+                  className="flex-1 flex flex-col items-center justify-end h-full"
                 >
-                  <span className="text-[9px] text-neutral-500">{amount > 0 ? Math.round(amount) : ""}</span>
+                  <span className={`text-[9px] ${t.sub} mb-1`}>{amount > 0 ? formatCHF(amount).split(",")[0] : ""}</span>
                   <div
-                    className={`w-full rounded-t transition-all ${isSelected ? t.chartActive : amount > 0 ? t.chartBar : t.chartBarEmpty}`}
-                    style={{ height: `${Math.max(height, 2)}%` }}
+                    className={`w-full rounded-t-md transition-all ${isSelected ? "bg-emerald-500" : amount > 0 ? (darkMode ? "bg-emerald-500/30" : "bg-emerald-200") : (darkMode ? "bg-white/5" : "bg-gray-100")}`}
+                    style={{ height: Math.max(barHeight, 4) }}
                   />
-                  <span className={`text-[9px] ${isSelected ? "text-emerald-400 font-bold" : "text-neutral-600"}`}>{MONTH_NAMES[i]}</span>
+                  <span className={`text-[9px] mt-1 ${isSelected ? "text-emerald-400 font-bold" : t.sub}`}>{MONTH_NAMES[i]}</span>
                 </button>
               );
             })}
