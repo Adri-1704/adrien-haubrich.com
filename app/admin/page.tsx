@@ -24,6 +24,7 @@ interface ManualProject {
 }
 
 const PROJECTS: ManualProject[] = [
+  { name: "Yattoo.io", color: "#22c55e", type: "SaaS B2C + Stripe", monthRevenue: 0, monthExpenses: 0, notes: "" },
   { name: "FunkyFeet.ch", color: "#7c3aed", type: "Shopify", monthRevenue: 0, monthExpenses: 0, notes: "" },
   { name: "LatelierSuisse.ch", color: "#dc2626", type: "Shopify", monthRevenue: 0, monthExpenses: 0, notes: "" },
   { name: "LatelierSuisse.co (B2B)", color: "#991b1b", type: "Factures", monthRevenue: 0, monthExpenses: 0, notes: "" },
