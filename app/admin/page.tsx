@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 
+const MONTH_NAMES_FULL = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
 const MONTH_NAMES = ["Jan", "Fév", "Mar", "Avr", "Mai", "Jun", "Jul", "Aoû", "Sep", "Oct", "Nov", "Déc"];
 
 interface StripeData {
@@ -14,27 +15,42 @@ interface StripeData {
   monthlyBreakdown: number[];
 }
 
-interface ManualProject {
-  name: string;
-  color: string;
-  type: string;
-  monthRevenue: number;
-  monthExpenses: number;
+interface ProjectData {
+  revenue: number;
+  expenses: number;
   notes: string;
 }
 
-const PROJECTS: ManualProject[] = [
-  { name: "Yattoo.io", color: "#22c55e", type: "SaaS B2C + Stripe", monthRevenue: 0, monthExpenses: 0, notes: "" },
-  { name: "FunkyFeet.ch", color: "#7c3aed", type: "Shopify", monthRevenue: 0, monthExpenses: 0, notes: "" },
-  { name: "LatelierSuisse.ch", color: "#dc2626", type: "Shopify", monthRevenue: 0, monthExpenses: 0, notes: "" },
-  { name: "LatelierSuisse.co (B2B)", color: "#991b1b", type: "Factures", monthRevenue: 0, monthExpenses: 0, notes: "" },
-  { name: "Merciinternet.ch", color: "#7C3AED", type: "SaaS (bientôt)", monthRevenue: 0, monthExpenses: 0, notes: "" },
-  { name: "OnVousTrouve.ch", color: "#1e40af", type: "Agence web", monthRevenue: 0, monthExpenses: 0, notes: "" },
-  { name: "Just-Tag.ch", color: "#ea580c", type: "Plateforme locale", monthRevenue: 0, monthExpenses: 0, notes: "" },
+const PROJECT_DEFS = [
+  { name: "Yattoo.io", color: "#22c55e", type: "SaaS B2C + Stripe" },
+  { name: "FunkyFeet.ch", color: "#7c3aed", type: "Shopify" },
+  { name: "LatelierSuisse.ch", color: "#dc2626", type: "Shopify" },
+  { name: "LatelierSuisse.co (B2B)", color: "#991b1b", type: "Factures" },
+  { name: "Merciinternet.ch", color: "#7C3AED", type: "SaaS (bientôt)" },
+  { name: "OnVousTrouve.ch", color: "#1e40af", type: "Agence web" },
+  { name: "Just-Tag.ch", color: "#ea580c", type: "SaaS" },
 ];
 
 function formatCHF(amount: number): string {
   return amount.toLocaleString("fr-CH", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function getMonthKey(year: number, month: number): string {
+  return `${year}-${String(month + 1).padStart(2, "0")}`;
+}
+
+function loadMonthData(monthKey: string): Record<string, ProjectData> {
+  if (typeof window === "undefined") return {};
+  try {
+    const raw = localStorage.getItem(`ah-admin-${monthKey}`);
+    if (raw) return JSON.parse(raw);
+  } catch { /* ignore */ }
+  return {};
+}
+
+function saveMonthData(monthKey: string, data: Record<string, ProjectData>) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(`ah-admin-${monthKey}`, JSON.stringify(data));
 }
 
 export default function Admin() {
@@ -53,21 +69,53 @@ export default function Admin() {
     } catch { /* ignore */ }
     return null;
   });
-  const [manualProjects, setManualProjects] = useState<ManualProject[]>(() => {
-    if (typeof window === "undefined") return PROJECTS;
-    try {
-      const saved = localStorage.getItem("ah-admin-manual");
-      if (saved) {
-        const parsed = JSON.parse(saved) as ManualProject[];
-        // Merge: keep saved data but add any new projects from PROJECTS
-        const merged = PROJECTS.map((def) => {
-          const existing = parsed.find((p) => p.name === def.name);
-          return existing ? { ...def, monthRevenue: existing.monthRevenue, monthExpenses: existing.monthExpenses, notes: existing.notes } : def;
-        });
-        return merged;
+
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const [selectedMonth, setSelectedMonth] = useState(now.getMonth());
+  const selectedMonthKey = getMonthKey(currentYear, selectedMonth);
+
+  const [monthData, setMonthData] = useState<Record<string, ProjectData>>(() => loadMonthData(getMonthKey(currentYear, now.getMonth())));
+
+  const switchMonth = useCallback((month: number) => {
+    setSelectedMonth(month);
+    setMonthData(loadMonthData(getMonthKey(currentYear, month)));
+  }, [currentYear]);
+
+  function updateProject(projectName: string, field: keyof ProjectData, value: number | string) {
+    const updated = { ...monthData };
+    if (!updated[projectName]) updated[projectName] = { revenue: 0, expenses: 0, notes: "" };
+    (updated[projectName] as Record<string, unknown>)[field] = value;
+    setMonthData(updated);
+    saveMonthData(selectedMonthKey, updated);
+  }
+
+  function getProjectData(name: string): ProjectData {
+    return monthData[name] || { revenue: 0, expenses: 0, notes: "" };
+  }
+
+  // Totals for selected month
+  const monthTotalRevenue = PROJECT_DEFS.reduce((s, p) => s + getProjectData(p.name).revenue, 0);
+  const monthTotalExpenses = PROJECT_DEFS.reduce((s, p) => s + getProjectData(p.name).expenses, 0);
+  const monthMargin = monthTotalRevenue - monthTotalExpenses;
+
+  // Year totals
+  const yearTotals = { revenue: 0, expenses: 0 };
+  for (let m = 0; m < 12; m++) {
+    const data = loadMonthData(getMonthKey(currentYear, m));
+    for (const p of PROJECT_DEFS) {
+      const pd = data[p.name];
+      if (pd) {
+        yearTotals.revenue += pd.revenue || 0;
+        yearTotals.expenses += pd.expenses || 0;
       }
-    } catch { /* ignore */ }
-    return PROJECTS;
+    }
+  }
+
+  // Monthly revenue breakdown for chart
+  const monthlyRevenues = Array.from({ length: 12 }, (_, m) => {
+    const data = loadMonthData(getMonthKey(currentYear, m));
+    return PROJECT_DEFS.reduce((s, p) => s + (data[p.name]?.revenue || 0), 0);
   });
 
   async function login() {
@@ -92,22 +140,6 @@ export default function Admin() {
     }
   }
 
-  function updateManualProject(index: number, field: keyof ManualProject, value: string | number) {
-    const updated = [...manualProjects];
-    (updated[index] as unknown as Record<string, unknown>)[field] = value;
-    setManualProjects(updated);
-    localStorage.setItem("ah-admin-manual", JSON.stringify(updated));
-  }
-
-  // Totals
-  const manualTotalRevenue = manualProjects.reduce((s, p) => s + p.monthRevenue, 0);
-  const manualTotalExpenses = manualProjects.reduce((s, p) => s + p.monthExpenses, 0);
-  const stripeMonthRevenue = stripeData?.monthRevenue || 0;
-  const totalMonthRevenue = stripeMonthRevenue + manualTotalRevenue;
-  const totalMonthExpenses = manualTotalExpenses;
-  const totalMargin = totalMonthRevenue - totalMonthExpenses;
-
-  // Login screen
   if (!authenticated) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#0a0a0a] px-6">
@@ -124,11 +156,7 @@ export default function Admin() {
               autoFocus
             />
             {error && <p className="text-sm text-red-400">{error}</p>}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full rounded-lg bg-white py-3 text-sm font-semibold text-black transition-colors hover:bg-neutral-200 disabled:opacity-50"
-            >
+            <button type="submit" disabled={loading} className="w-full rounded-lg bg-white py-3 text-sm font-semibold text-black transition-colors hover:bg-neutral-200 disabled:opacity-50">
               {loading ? "Chargement..." : "Connexion"}
             </button>
           </form>
@@ -139,7 +167,6 @@ export default function Admin() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white">
-      {/* Header */}
       <header className="border-b border-white/5 px-6 py-4">
         <div className="mx-auto flex max-w-7xl items-center justify-between">
           <h1 className="text-lg font-bold">Admin — Adrien Haubrich</h1>
@@ -150,25 +177,50 @@ export default function Admin() {
       </header>
 
       <div className="mx-auto max-w-7xl px-6 py-8 space-y-8">
-        {/* ─── Global Summary ─── */}
+
+        {/* ─── Month Selector ─── */}
+        <div className="grid grid-cols-6 sm:grid-cols-12 gap-1.5">
+          {MONTH_NAMES.map((name, i) => {
+            const hasData = Object.keys(loadMonthData(getMonthKey(currentYear, i))).length > 0;
+            return (
+              <button
+                key={i}
+                onClick={() => switchMonth(i)}
+                className={`rounded-lg py-2 text-xs font-medium transition-all ${
+                  i === selectedMonth
+                    ? "bg-white text-black"
+                    : hasData
+                      ? "bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30"
+                      : "bg-white/5 text-neutral-500 hover:bg-white/10"
+                }`}
+              >
+                {name}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* ─── Summary for selected month ─── */}
         <div>
-          <h2 className="mb-4 text-sm font-medium uppercase tracking-wider text-neutral-500">Vue d&apos;ensemble — Ce mois</h2>
+          <h2 className="mb-4 text-sm font-medium uppercase tracking-wider text-neutral-500">
+            {MONTH_NAMES_FULL[selectedMonth]} {currentYear}
+          </h2>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             <div className="rounded-xl border border-white/5 bg-[#111] p-5">
-              <p className="text-xs text-neutral-500 mb-1">CA total du mois</p>
-              <p className="text-2xl font-bold text-emerald-400">{formatCHF(totalMonthRevenue)} <span className="text-sm text-neutral-500">CHF</span></p>
+              <p className="text-xs text-neutral-500 mb-1">CA du mois</p>
+              <p className="text-2xl font-bold text-emerald-400">{formatCHF(monthTotalRevenue)} <span className="text-sm text-neutral-500">CHF</span></p>
             </div>
             <div className="rounded-xl border border-white/5 bg-[#111] p-5">
               <p className="text-xs text-neutral-500 mb-1">Charges du mois</p>
-              <p className="text-2xl font-bold text-red-400">{formatCHF(totalMonthExpenses)} <span className="text-sm text-neutral-500">CHF</span></p>
+              <p className="text-2xl font-bold text-red-400">{formatCHF(monthTotalExpenses)} <span className="text-sm text-neutral-500">CHF</span></p>
             </div>
             <div className="rounded-xl border border-white/5 bg-[#111] p-5">
               <p className="text-xs text-neutral-500 mb-1">Marge</p>
-              <p className={`text-2xl font-bold ${totalMargin >= 0 ? "text-emerald-400" : "text-red-400"}`}>{formatCHF(totalMargin)} <span className="text-sm text-neutral-500">CHF</span></p>
+              <p className={`text-2xl font-bold ${monthMargin >= 0 ? "text-emerald-400" : "text-red-400"}`}>{formatCHF(monthMargin)} <span className="text-sm text-neutral-500">CHF</span></p>
             </div>
             <div className="rounded-xl border border-white/5 bg-[#111] p-5">
-              <p className="text-xs text-neutral-500 mb-1">Projets actifs</p>
-              <p className="text-2xl font-bold text-white">{manualProjects.length + 1}</p>
+              <p className="text-xs text-neutral-500 mb-1">CA annuel {currentYear}</p>
+              <p className="text-2xl font-bold text-white">{formatCHF(yearTotals.revenue)} <span className="text-sm text-neutral-500">CHF</span></p>
             </div>
           </div>
         </div>
@@ -178,7 +230,7 @@ export default function Admin() {
           <div>
             <h2 className="mb-4 text-sm font-medium uppercase tracking-wider text-neutral-500">
               <span className="inline-block h-2 w-2 rounded-full bg-emerald-400 mr-2" />
-              Yattoo — Stripe
+              Yattoo — Stripe (automatique)
             </h2>
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
               <div className="rounded-xl border border-white/5 bg-[#111] p-4">
@@ -190,7 +242,7 @@ export default function Admin() {
                 <p className="text-lg font-bold text-white">{formatCHF(stripeData.lastMonthRevenue)}</p>
               </div>
               <div className="rounded-xl border border-white/5 bg-[#111] p-4">
-                <p className="text-[10px] text-neutral-500 mb-1">CA annuel</p>
+                <p className="text-[10px] text-neutral-500 mb-1">CA annuel Stripe</p>
                 <p className="text-lg font-bold text-white">{formatCHF(stripeData.yearRevenue)}</p>
               </div>
               <div className="rounded-xl border border-white/5 bg-[#111] p-4">
@@ -206,104 +258,109 @@ export default function Admin() {
                 <p className="text-lg font-bold text-white">{stripeData.totalCustomers}</p>
               </div>
             </div>
-
-            {/* Monthly chart */}
-            <div className="mt-4 rounded-xl border border-white/5 bg-[#111] p-5">
-              <p className="text-xs text-neutral-500 mb-4">CA mensuel {new Date().getFullYear()}</p>
-              <div className="flex items-end gap-1 h-32">
-                {stripeData.monthlyBreakdown.map((amount, i) => {
-                  const max = Math.max(...stripeData.monthlyBreakdown, 1);
-                  const height = max > 0 ? (amount / max) * 100 : 0;
-                  const isCurrent = i === new Date().getMonth();
-                  return (
-                    <div key={i} className="flex-1 flex flex-col items-center gap-1">
-                      <span className="text-[9px] text-neutral-500">{amount > 0 ? Math.round(amount) : ""}</span>
-                      <div
-                        className={`w-full rounded-t transition-all ${isCurrent ? "bg-emerald-500" : "bg-white/10"}`}
-                        style={{ height: `${Math.max(height, 2)}%` }}
-                      />
-                      <span className={`text-[9px] ${isCurrent ? "text-emerald-400 font-bold" : "text-neutral-600"}`}>{MONTH_NAMES[i]}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
           </div>
         )}
 
-        {/* ─── Other Projects (manual) ─── */}
+        {/* ─── Projects for selected month ─── */}
         <div>
-          <h2 className="mb-4 text-sm font-medium uppercase tracking-wider text-neutral-500">Autres projets — Saisie manuelle</h2>
-          <p className="mb-4 text-xs text-neutral-600">Les données Shopify seront automatiques une fois les clés API configurées.</p>
+          <h2 className="mb-4 text-sm font-medium uppercase tracking-wider text-neutral-500">
+            Projets — {MONTH_NAMES_FULL[selectedMonth]} {currentYear}
+          </h2>
           <div className="space-y-3">
-            {manualProjects.map((project, i) => (
-              <div key={project.name} className="rounded-xl border border-white/5 bg-[#111] p-5">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="h-3 w-3 rounded-full" style={{ backgroundColor: project.color }} />
-                  <h3 className="text-sm font-bold text-white">{project.name}</h3>
-                  <span className="rounded-full border border-white/10 px-2 py-0.5 text-[10px] text-neutral-500">{project.type}</span>
-                </div>
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                  <div>
-                    <label className="block text-[10px] text-neutral-500 mb-1">CA du mois (CHF)</label>
-                    <input
-                      type="number"
-                      min="0"
-                      value={project.monthRevenue || ""}
-                      onChange={(e) => { const v = e.target.value; updateManualProject(i, "monthRevenue", v === "" ? 0 : Math.max(0, parseFloat(v) || 0)); }}
-                      placeholder="0"
-                      className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-emerald-400 font-semibold outline-none focus:border-emerald-500/50"
-                    />
+            {PROJECT_DEFS.map((project) => {
+              const pd = getProjectData(project.name);
+              const margin = pd.revenue - pd.expenses;
+              return (
+                <div key={project.name} className="rounded-xl border border-white/5 bg-[#111] p-5">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="h-3 w-3 rounded-full" style={{ backgroundColor: project.color }} />
+                    <h3 className="text-sm font-bold text-white">{project.name}</h3>
+                    <span className="rounded-full border border-white/10 px-2 py-0.5 text-[10px] text-neutral-500">{project.type}</span>
                   </div>
-                  <div>
-                    <label className="block text-[10px] text-neutral-500 mb-1">Charges du mois (CHF)</label>
-                    <input
-                      type="number"
-                      min="0"
-                      value={project.monthExpenses || ""}
-                      onChange={(e) => { const v = e.target.value; updateManualProject(i, "monthExpenses", v === "" ? 0 : Math.max(0, parseFloat(v) || 0)); }}
-                      placeholder="0"
-                      className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-red-400 font-semibold outline-none focus:border-red-500/50"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[10px] text-neutral-500 mb-1">Marge</label>
-                    <div className={`rounded-lg border border-white/5 bg-white/5 px-3 py-2 text-sm font-semibold ${project.monthRevenue - project.monthExpenses >= 0 ? "text-emerald-400" : "text-red-400"}`}>
-                      {formatCHF(project.monthRevenue - project.monthExpenses)}
+                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                    <div>
+                      <label className="block text-[10px] text-neutral-500 mb-1">CA (CHF)</label>
+                      <input
+                        type="number"
+                        min="0"
+                        value={pd.revenue || ""}
+                        onChange={(e) => updateProject(project.name, "revenue", Math.max(0, parseFloat(e.target.value) || 0))}
+                        placeholder="0"
+                        className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-emerald-400 font-semibold outline-none focus:border-emerald-500/50"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] text-neutral-500 mb-1">Charges (CHF)</label>
+                      <input
+                        type="number"
+                        min="0"
+                        value={pd.expenses || ""}
+                        onChange={(e) => updateProject(project.name, "expenses", Math.max(0, parseFloat(e.target.value) || 0))}
+                        placeholder="0"
+                        className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-red-400 font-semibold outline-none focus:border-red-500/50"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] text-neutral-500 mb-1">Marge</label>
+                      <div className={`rounded-lg border border-white/5 bg-white/5 px-3 py-2 text-sm font-semibold ${margin >= 0 ? "text-emerald-400" : "text-red-400"}`}>
+                        {formatCHF(margin)}
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-[10px] text-neutral-500 mb-1">Notes</label>
+                      <input
+                        type="text"
+                        value={pd.notes || ""}
+                        onChange={(e) => updateProject(project.name, "notes", e.target.value)}
+                        placeholder="..."
+                        className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-neutral-400 outline-none focus:border-white/25"
+                      />
                     </div>
                   </div>
-                  <div>
-                    <label className="block text-[10px] text-neutral-500 mb-1">Notes</label>
-                    <input
-                      type="text"
-                      value={project.notes}
-                      onChange={(e) => updateManualProject(i, "notes", e.target.value)}
-                      placeholder="..."
-                      className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-neutral-400 outline-none focus:border-white/25"
-                    />
-                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
+          </div>
+        </div>
+
+        {/* ─── Year Chart ─── */}
+        <div className="rounded-xl border border-white/5 bg-[#111] p-5">
+          <p className="text-xs text-neutral-500 mb-4">CA mensuel tous projets — {currentYear}</p>
+          <div className="flex items-end gap-1 h-40">
+            {monthlyRevenues.map((amount, i) => {
+              const max = Math.max(...monthlyRevenues, 1);
+              const height = max > 0 ? (amount / max) * 100 : 0;
+              const isSelected = i === selectedMonth;
+              return (
+                <button
+                  key={i}
+                  onClick={() => switchMonth(i)}
+                  className="flex-1 flex flex-col items-center gap-1"
+                >
+                  <span className="text-[9px] text-neutral-500">{amount > 0 ? Math.round(amount) : ""}</span>
+                  <div
+                    className={`w-full rounded-t transition-all ${isSelected ? "bg-emerald-500" : amount > 0 ? "bg-white/20" : "bg-white/5"}`}
+                    style={{ height: `${Math.max(height, 2)}%` }}
+                  />
+                  <span className={`text-[9px] ${isSelected ? "text-emerald-400 font-bold" : "text-neutral-600"}`}>{MONTH_NAMES[i]}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
         {/* ─── CA Total ─── */}
         <div className="rounded-xl border border-white/5 bg-gradient-to-r from-[#111] to-[#1a1a2e] p-6 text-center">
-          <p className="text-xs text-neutral-500 mb-3">Chiffre d&apos;affaires total — Ce mois</p>
-          <p className="text-4xl font-extrabold text-emerald-400">{formatCHF(totalMonthRevenue)} <span className="text-lg text-neutral-500">CHF</span></p>
-          <div className="mt-4 grid grid-cols-3 gap-4 text-center">
+          <p className="text-xs text-neutral-500 mb-3">Chiffre d&apos;affaires total — {currentYear}</p>
+          <p className="text-4xl font-extrabold text-emerald-400">{formatCHF(yearTotals.revenue)} <span className="text-lg text-neutral-500">CHF</span></p>
+          <div className="mt-4 grid grid-cols-2 gap-4 text-center">
             <div>
-              <p className="text-[10px] text-neutral-500">Stripe (Yattoo)</p>
-              <p className="text-sm font-bold text-white">{formatCHF(stripeMonthRevenue)}</p>
+              <p className="text-[10px] text-neutral-500">Charges totales</p>
+              <p className="text-sm font-bold text-red-400">{formatCHF(yearTotals.expenses)}</p>
             </div>
             <div>
-              <p className="text-[10px] text-neutral-500">Autres projets</p>
-              <p className="text-sm font-bold text-white">{formatCHF(manualTotalRevenue)}</p>
-            </div>
-            <div>
-              <p className="text-[10px] text-neutral-500">Marge nette</p>
-              <p className={`text-sm font-bold ${totalMargin >= 0 ? "text-emerald-400" : "text-red-400"}`}>{formatCHF(totalMargin)}</p>
+              <p className="text-[10px] text-neutral-500">Marge nette annuelle</p>
+              <p className={`text-sm font-bold ${yearTotals.revenue - yearTotals.expenses >= 0 ? "text-emerald-400" : "text-red-400"}`}>{formatCHF(yearTotals.revenue - yearTotals.expenses)}</p>
             </div>
           </div>
         </div>
