@@ -172,8 +172,10 @@ export default function Admin() {
   }, [authenticated, synced, currentYear]);
 
   const switchMonth = useCallback((month: number) => {
+    const scrollY = window.scrollY;
     setSelectedMonth(month);
-  }, []);
+    setTimeout(() => window.scrollTo({ top: scrollY, behavior: "instant" as ScrollBehavior }), 0);
+  }, [currentYear]);
 
   function saveToServer(mk: string, data: Record<string, ProjectData>) {
     const pwd = passwordRef.current || sessionStorage.getItem("ah-admin-pwd") || "";
