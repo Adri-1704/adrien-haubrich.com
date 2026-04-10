@@ -208,15 +208,43 @@ export default function Admin() {
     updateProject("__salary__", field, value);
   }
 
+  // Fixed charges (stored in localStorage, synced)
+  interface FixedCharge { name: string; amount: number; }
+  const fixedChargesRaw = getProjectData("__fixed_charges__");
+  const fixedCharges: FixedCharge[] = (() => {
+    try {
+      if (fixedChargesRaw.notes) return JSON.parse(fixedChargesRaw.notes);
+    } catch { /* ignore */ }
+    return [];
+  })();
+  const totalFixedCharges = fixedCharges.reduce((s, c) => s + c.amount, 0);
+
+  const [newChargeName, setNewChargeName] = useState("");
+  const [newChargeAmount, setNewChargeAmount] = useState("");
+
+  function addFixedCharge() {
+    const amt = parseFloat(newChargeAmount);
+    if (!newChargeName.trim() || isNaN(amt) || amt <= 0) return;
+    const updated = [...fixedCharges, { name: newChargeName.trim(), amount: amt }];
+    updateProject("__fixed_charges__", "notes", JSON.stringify(updated));
+    setNewChargeName("");
+    setNewChargeAmount("");
+  }
+
+  function removeFixedCharge(index: number) {
+    const updated = fixedCharges.filter((_, i) => i !== index);
+    updateProject("__fixed_charges__", "notes", JSON.stringify(updated));
+  }
+
   // Totals for selected month
   const monthTotalRevenue = PROJECT_DEFS.reduce((s, p) => s + getProjectData(p.name).revenue, 0);
-  const monthTotalExpenses = PROJECT_DEFS.reduce((s, p) => s + getProjectData(p.name).expenses, 0);
+  const monthTotalExpenses = PROJECT_DEFS.reduce((s, p) => s + getProjectData(p.name).expenses, 0) + totalFixedCharges;
   const monthSalary = salaryData.revenue;
   const monthTotalIncome = monthTotalRevenue + monthSalary;
   const monthMargin = monthTotalIncome - monthTotalExpenses;
 
   // Year totals
-  const yearTotals = { revenue: 0, expenses: 0, salary: 0 };
+  const yearTotals = { revenue: 0, expenses: 0, salary: 0, fixedCharges: 0 };
   for (let m = 0; m < 12; m++) {
     const mk = getMonthKey(currentYear, m);
     const data = allMonthsData[mk] || {};
@@ -229,6 +257,9 @@ export default function Admin() {
     }
     const sal = data["__salary__"];
     if (sal) yearTotals.salary += sal.revenue || 0;
+    // Fixed charges apply every month that has any data
+    const hasData = Object.keys(data).length > 0;
+    if (hasData) yearTotals.fixedCharges += totalFixedCharges;
   }
 
   // Monthly revenue breakdown for chart
@@ -455,6 +486,56 @@ export default function Admin() {
           </div>
         </div>
 
+        {/* ─── Fixed Charges ─── */}
+        <div className={`rounded-xl border ${t.card} p-5`}>
+          <div className="flex items-center gap-3 mb-4">
+            <div className="h-3 w-3 rounded-full bg-orange-500" />
+            <h3 className={`text-sm font-bold ${t.text}`}>Charges fixes mensuelles</h3>
+            <span className={`text-sm font-bold text-orange-400`}>{formatCHF(totalFixedCharges)} CHF/mois</span>
+          </div>
+
+          {/* List */}
+          {fixedCharges.length > 0 && (
+            <div className="space-y-2 mb-4">
+              {fixedCharges.map((charge, i) => (
+                <div key={i} className={`flex items-center justify-between rounded-lg border ${t.card} px-3 py-2`}>
+                  <span className={`text-sm ${t.text}`}>{charge.name}</span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm font-semibold text-orange-400">{formatCHF(charge.amount)} CHF</span>
+                    <button onClick={() => removeFixedCharge(i)} className={`text-xs ${t.sub} hover:text-red-400`}>✕</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Add form */}
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={newChargeName}
+              onChange={(e) => setNewChargeName(e.target.value)}
+              placeholder="Ex: Loyer atelier, Assurance..."
+              className={`flex-1 rounded-lg border ${t.inputNote} px-3 py-2 text-sm outline-none`}
+            />
+            <input
+              type="number"
+              min="0"
+              value={newChargeAmount}
+              onChange={(e) => setNewChargeAmount(e.target.value)}
+              placeholder="CHF"
+              className={`w-24 rounded-lg border ${t.inputRed} px-3 py-2 text-sm font-semibold outline-none`}
+            />
+            <button
+              onClick={addFixedCharge}
+              className="rounded-lg bg-orange-500 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-600"
+            >
+              +
+            </button>
+          </div>
+          <p className={`mt-2 text-[10px] ${t.sub}`}>Ces charges sont déduites automatiquement chaque mois de votre marge.</p>
+        </div>
+
         {/* ─── Projects for selected month ─── */}
         <div>
           <h2 className="mb-4 text-sm font-medium uppercase tracking-wider ${t.sub}">
@@ -557,12 +638,12 @@ export default function Admin() {
               <p className="text-sm font-bold text-blue-400">{formatCHF(yearTotals.salary)}</p>
             </div>
             <div>
-              <p className={`text-[10px] ${t.sub}`}>Charges totales</p>
-              <p className="text-sm font-bold text-red-400">{formatCHF(yearTotals.expenses)}</p>
+              <p className={`text-[10px] ${t.sub}`}>Charges + fixes</p>
+              <p className="text-sm font-bold text-red-400">{formatCHF(yearTotals.expenses + yearTotals.fixedCharges)}</p>
             </div>
             <div>
               <p className={`text-[10px] ${t.sub}`}>Bénéfice net</p>
-              <p className={`text-sm font-bold ${yearTotals.revenue + yearTotals.salary - yearTotals.expenses >= 0 ? "text-emerald-400" : "text-red-400"}`}>{formatCHF(yearTotals.revenue + yearTotals.salary - yearTotals.expenses)}</p>
+              <p className={`text-sm font-bold ${yearTotals.revenue + yearTotals.salary - yearTotals.expenses - yearTotals.fixedCharges >= 0 ? "text-emerald-400" : "text-red-400"}`}>{formatCHF(yearTotals.revenue + yearTotals.salary - yearTotals.expenses - yearTotals.fixedCharges)}</p>
             </div>
           </div>
         </div>
