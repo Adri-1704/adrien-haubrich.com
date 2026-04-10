@@ -317,7 +317,7 @@ export default function Home() {
       {/* ==================== ABOUT ==================== */}
       <section id="a-propos" className="py-16">
         <div className="mx-auto max-w-6xl px-6">
-          <div className="grid items-start gap-16 md:grid-cols-2">
+          <div className="grid items-center gap-16 md:grid-cols-2">
             <div>
               <p className="animate-fade-in mb-4 text-sm font-medium uppercase tracking-[0.3em] text-neutral-500">
                 À propos
@@ -328,18 +328,35 @@ export default function Home() {
               <div className="animate-fade-in-up delay-200 space-y-4 text-neutral-400 leading-relaxed">
                 <p>
                   Basé au Bouveret, en Valais, je suis passionné par
-                  l&apos;entrepreneuriat digital. Je crée des solutions
-                  technologiques pour aider les particuliers et les entreprises
-                  suisses à se développer.
+                  l&apos;entrepreneuriat digital depuis 2017. Je crée des
+                  solutions technologiques pour aider les particuliers et les
+                  entreprises suisses à se développer.
                 </p>
                 <p>
-                  Avec 9 projets actifs couvrant le SaaS, le e-commerce, les
-                  services web et les plateformes locales, mon objectif est de
-                  construire un écosystème digital au service de la Suisse.
+                  Du SaaS au e-commerce, en passant par les services web et les
+                  plateformes locales, mon objectif est de construire un
+                  écosystème digital 100% au service de la Suisse.
+                </p>
+                <p>
+                  Je travaille aussi en tant que salarié en parallèle de mes projets,
+                  ce qui me permet de rester ancré dans la réalité du terrain et de
+                  comprendre les vrais besoins des entrepreneurs et des indépendants.
                 </p>
               </div>
+              <div className="animate-fade-in-up delay-300 mt-8 flex flex-wrap gap-3">
+                <span className="rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-sm font-medium text-white">Le Bouveret, Valais</span>
+                <span className="rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-sm font-medium text-white">Entrepreneur depuis 2017</span>
+                <span className="rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-sm font-medium text-white">9 projets actifs</span>
+              </div>
             </div>
-
+            <div className="animate-fade-in-up delay-200 flex justify-center">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/adrien.webp"
+                alt="Adrien Haubrich"
+                className="h-80 w-80 rounded-2xl object-cover shadow-2xl shadow-white/5"
+              />
+            </div>
           </div>
         </div>
       </section>
