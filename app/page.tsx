@@ -196,10 +196,10 @@ export default function Home() {
           <div className="space-y-16">
             {sections.map((section, sectionIndex) => (
               <div key={section.title}>
-                <div className="mb-6 flex items-center gap-4">
-                  <h3 className="text-2xl font-bold text-white">{section.title}</h3>
+                <div className="mb-6 flex items-center gap-3">
+                  <h3 className="text-lg sm:text-2xl font-bold text-white shrink-0">{section.title}</h3>
                   <div className="h-px flex-1 bg-white/10" />
-                  <span className="text-sm text-neutral-500">{section.subtitle}</span>
+                  <span className="hidden sm:block text-sm text-neutral-500">{section.subtitle}</span>
                 </div>
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                   {section.projects.map((project, index) => (
