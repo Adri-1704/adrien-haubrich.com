@@ -90,7 +90,7 @@ const stats = [
   { value: "9", label: "Projets actifs" },
   { value: "4", label: "Secteurs" },
   { value: "100%", label: "Suisse" },
-  { value: "2017", label: "Depuis" },
+  { value: "20+", label: "Années d'expérience" },
 ];
 
 const skills = [
@@ -328,7 +328,7 @@ export default function Home() {
               <div className="animate-fade-in-up delay-200 space-y-4 text-neutral-400 leading-relaxed">
                 <p>
                   Basé au Bouveret, en Valais, je suis passionné par
-                  l&apos;entrepreneuriat digital depuis 2017. Je crée des
+                  l&apos;entrepreneuriat digital. Indépendant depuis plus de 20 ans, je crée des
                   solutions technologiques pour aider les particuliers et les
                   entreprises suisses à se développer.
                 </p>
@@ -345,7 +345,7 @@ export default function Home() {
               </div>
               <div className="animate-fade-in-up delay-300 mt-8 flex flex-wrap gap-3">
                 <span className="rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-sm font-medium text-white">Le Bouveret, Valais</span>
-                <span className="rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-sm font-medium text-white">Entrepreneur depuis 2017</span>
+                <span className="rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-sm font-medium text-white">Indépendant depuis +20 ans</span>
                 <span className="rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-sm font-medium text-white">9 projets actifs</span>
               </div>
             </div>
