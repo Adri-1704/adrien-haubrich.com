@@ -33,6 +33,13 @@ const sections = [
         type: "Plateforme locale",
         color: "#ea580c",
       },
+      {
+        name: "VenteSiteInternet.ch",
+        url: "https://ventesiteinternet.ch",
+        description: "Marketplace suisse pour acheter et vendre des sites web, e-commerces, SaaS et noms de domaine.",
+        type: "Marketplace",
+        color: "#10b981",
+      },
     ],
   },
   {
