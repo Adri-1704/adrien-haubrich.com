@@ -1,3 +1,5 @@
+import { ThemeToggle } from "./components/ThemeToggle";
+
 const sections = [
   {
     title: "SaaS",
@@ -134,6 +136,7 @@ export default function Home() {
             >
               Contact
             </a>
+            <ThemeToggle />
           </div>
         </div>
       </nav>
