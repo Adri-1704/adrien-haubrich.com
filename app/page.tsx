@@ -338,9 +338,9 @@ export default function Home() {
                   écosystème digital 100% au service de la Suisse.
                 </p>
                 <p>
-                  Je travaille aussi en tant que salarié en parallèle de mes projets,
-                  ce qui me permet de rester ancré dans la réalité du terrain et de
-                  comprendre les vrais besoins des entrepreneurs et des indépendants.
+                  Après plus de 20 ans d&apos;entrepreneuriat, je reste ancré dans la
+                  réalité du terrain, ce qui me permet de comprendre les vrais besoins
+                  des entrepreneurs et des indépendants.
                 </p>
               </div>
               <div className="animate-fade-in-up delay-300 mt-8 flex flex-wrap gap-3">
