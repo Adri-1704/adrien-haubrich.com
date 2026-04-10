@@ -235,7 +235,7 @@ export default function Home() {
                               <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                             </svg>
                           </div>
-                          {project.forSale && (
+                          {"forSale" in project && project.forSale && (
                             <span className="rounded border border-red-500 bg-red-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-red-500">
                               A vendre
                             </span>
