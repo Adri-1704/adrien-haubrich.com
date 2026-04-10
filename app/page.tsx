@@ -52,7 +52,6 @@ const sections = [
         description: "E-commerce spécialisé dans la personnalisation sur textiles et objets pour particuliers.",
         type: "E-commerce B2C",
         color: "#dc2626",
-        forSale: true,
       },
       {
         name: "LatelierSuisse.co",
@@ -60,7 +59,6 @@ const sections = [
         description: "Personnalisation sur textiles et objets pour entreprises. Solutions sur mesure en volume.",
         type: "E-commerce B2B",
         color: "#991b1b",
-        forSale: true,
       },
     ],
   },
