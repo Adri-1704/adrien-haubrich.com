@@ -68,12 +68,19 @@ export default function CRMPage() {
 
   const loadData = useCallback(async () => {
     setLoading(true);
-    const [{ prospects: p }, { stats: s }] = await Promise.all([
-      api("list", filter ? { status: filter } : {}),
-      api("stats"),
-    ]);
-    setProspects(p || []);
-    setStats(s || {});
+    try {
+      const listResult = await api("list", filter ? { status: filter } : {});
+      const statsResult = await api("stats");
+
+      if (listResult.error) {
+        alert("Erreur liste: " + listResult.error);
+      }
+
+      setProspects(listResult.prospects || []);
+      setStats(statsResult.stats || {});
+    } catch (err) {
+      alert("Erreur loadData: " + String(err));
+    }
     setLoading(false);
   }, [api, filter]);
 
