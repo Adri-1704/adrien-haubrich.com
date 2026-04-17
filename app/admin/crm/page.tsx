@@ -197,7 +197,7 @@ export default function CRMPage() {
           </div>
           <div style={{ display: "flex", gap: 8 }}>
             <Link href="/admin" style={{ padding: "8px 16px", borderRadius: 8, background: "#222", color: "#666", fontSize: 13, textDecoration: "none" }}>Admin</Link>
-            <Link href="/admin/crm" style={{ padding: "8px 16px", borderRadius: 8, background: "#333", color: "#fff", fontSize: 13, textDecoration: "none" }}>🤖 CRM</Link>
+            <button onClick={() => { setShowForm(false); setEditingProspect(null); loadData(); }} style={{ padding: "8px 16px", borderRadius: 8, background: "#333", color: "#fff", fontSize: 13, border: "none", cursor: "pointer" }}>🤖 CRM</button>
             <button onClick={openNew} style={{ padding: "8px 16px", borderRadius: 8, background: "white", color: "black", fontWeight: 600, fontSize: 13, border: "none", cursor: "pointer" }}>+ Ajouter</button>
           </div>
         </div>
