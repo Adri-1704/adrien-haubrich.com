@@ -109,11 +109,11 @@ export default function CRMPage() {
   }
 
   function openNew() {
-    window.location.href = "/admin/crm/edit";
+    window.location.href = "/admin/crm/new";
   }
 
   function openEdit(p: Prospect) {
-    window.location.href = `/admin/crm/edit?id=${p.id}`;
+    window.location.href = `/admin/crm/${p.id}`;
   }
 
   async function saveProspect(e: React.FormEvent) {
