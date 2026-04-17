@@ -8,22 +8,15 @@ const supabase = createClient(
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "Adrien2026";
 
-function auth(req: NextRequest): boolean {
-  const pwd = req.headers.get("x-admin-password") || "";
-  if (pwd !== ADMIN_PASSWORD) {
-    console.error(`[CRM] Auth failed. Got: "${pwd.slice(0,3)}..." Expected: "${ADMIN_PASSWORD.slice(0,3)}..."`);
-    return false;
-  }
-  return true;
-}
-
 export async function POST(request: NextRequest) {
-  if (!auth(request)) {
+  const body = await request.json();
+  const { action, password: bodyPassword } = body;
+
+  // Auth: check password from body OR header
+  const pwd = bodyPassword || request.headers.get("x-admin-password") || "";
+  if (pwd !== ADMIN_PASSWORD) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-
-  const body = await request.json();
-  const { action } = body;
 
   // LIST all prospects
   if (action === "list") {

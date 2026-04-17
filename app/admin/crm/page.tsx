@@ -60,8 +60,8 @@ export default function CRMPage() {
     const pwd = password || sessionStorage.getItem("ah-admin-pwd") || "";
     const res = await fetch("/api/crm", {
       method: "POST",
-      headers: { "Content-Type": "application/json", "x-admin-password": pwd },
-      body: JSON.stringify({ action, ...extra }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action, password: pwd, ...extra }),
     });
     return res.json();
   }, [password]);
