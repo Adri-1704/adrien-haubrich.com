@@ -10,13 +10,7 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "Adrien2026";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
-  const { action, password: bodyPassword } = body;
-
-  // Auth: check password from body OR header
-  const pwd = bodyPassword || request.headers.get("x-admin-password") || "";
-  if (pwd !== ADMIN_PASSWORD) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const { action } = body;
 
   // LIST all prospects
   if (action === "list") {

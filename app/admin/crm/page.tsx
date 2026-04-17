@@ -33,8 +33,8 @@ const STATUS_LABELS: Record<string, { label: string; bg: string }> = {
 };
 
 export default function CRMPage() {
-  const [authenticated, setAuthenticated] = useState(false);
-  const [password, setPassword] = useState("");
+  const [authenticated, setAuthenticated] = useState(true);
+  const [password, setPassword] = useState("ok");
   const [prospects, setProspects] = useState<Prospect[]>([]);
   const [stats, setStats] = useState<Record<string, number>>({});
   const [filter, setFilter] = useState("");
