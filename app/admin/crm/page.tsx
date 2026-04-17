@@ -109,23 +109,11 @@ export default function CRMPage() {
   }
 
   function openNew() {
-    setEditingProspect(null);
-    setForm({ name: "", contact_name: "", email: "", phone: "", instagram: "", city: "", canton: "", type: "restaurant", source: "manual", status: "new", priority: "normal", notes: "", last_contact_at: "", next_follow_up_at: "", follow_up_action: "" });
-    setShowForm(true);
+    window.location.href = "/admin/crm/edit";
   }
 
   function openEdit(p: Prospect) {
-    setEditingProspect(p);
-    setForm({
-      name: p.name, contact_name: p.contact_name || "", email: p.email || "",
-      phone: p.phone || "", instagram: p.instagram || "", city: p.city || "",
-      canton: p.canton || "", type: p.type, source: p.source, status: p.status,
-      priority: p.priority, notes: p.notes || "",
-      last_contact_at: p.last_contact_at?.slice(0, 10) || "",
-      next_follow_up_at: p.next_follow_up_at?.slice(0, 10) || "",
-      follow_up_action: p.follow_up_action || "",
-    });
-    setShowForm(true);
+    window.location.href = `/admin/crm/edit?id=${p.id}`;
   }
 
   async function saveProspect(e: React.FormEvent) {
