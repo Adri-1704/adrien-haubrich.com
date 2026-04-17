@@ -86,11 +86,26 @@ export default function CRMPage() {
 
   useEffect(() => { if (authenticated) loadData(); }, [authenticated, loadData]);
 
-  function login(e: React.FormEvent) {
+  async function login(e: React.FormEvent) {
     e.preventDefault();
-    sessionStorage.setItem("ah-admin-auth", "1");
-    sessionStorage.setItem("ah-admin-pwd", password);
-    setAuthenticated(true);
+    // Verify password against API before accepting
+    try {
+      const res = await fetch("/api/crm", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "stats", password }),
+      });
+      const data = await res.json();
+      if (data.error) {
+        alert("Mot de passe incorrect");
+        return;
+      }
+      sessionStorage.setItem("ah-admin-auth", "1");
+      sessionStorage.setItem("ah-admin-pwd", password);
+      setAuthenticated(true);
+    } catch {
+      alert("Erreur de connexion");
+    }
   }
 
   function openNew() {
