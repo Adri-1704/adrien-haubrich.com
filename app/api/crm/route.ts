@@ -6,11 +6,15 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY!
 );
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "Adrien2026!";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "Adrien2026";
 
 function auth(req: NextRequest): boolean {
   const pwd = req.headers.get("x-admin-password") || "";
-  return pwd === ADMIN_PASSWORD;
+  if (pwd !== ADMIN_PASSWORD) {
+    console.error(`[CRM] Auth failed. Got: "${pwd.slice(0,3)}..." Expected: "${ADMIN_PASSWORD.slice(0,3)}..."`);
+    return false;
+  }
+  return true;
 }
 
 export async function POST(request: NextRequest) {

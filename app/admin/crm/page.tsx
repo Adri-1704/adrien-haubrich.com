@@ -108,14 +108,30 @@ export default function CRMPage() {
 
   async function saveProspect(e: React.FormEvent) {
     e.preventDefault();
-    const prospect = { ...form, last_contact_at: form.last_contact_at || null, next_follow_up_at: form.next_follow_up_at || null, follow_up_action: form.follow_up_action || null };
-    if (editingProspect) {
-      await api("update", { id: editingProspect.id, prospect });
-    } else {
-      await api("create", { prospect });
+    // Clean empty strings to null
+    const prospect: Record<string, unknown> = {};
+    for (const [key, val] of Object.entries(form)) {
+      prospect[key] = (typeof val === "string" && val.trim() === "") ? null : val;
     }
-    setShowForm(false);
-    loadData();
+    // Name is required
+    if (!prospect.name) { alert("Le nom est requis"); return; }
+
+    try {
+      let result;
+      if (editingProspect) {
+        result = await api("update", { id: editingProspect.id, prospect });
+      } else {
+        result = await api("create", { prospect });
+      }
+      if (result.error) {
+        alert("Erreur: " + result.error);
+        return;
+      }
+      setShowForm(false);
+      loadData();
+    } catch (err) {
+      alert("Erreur réseau: " + String(err));
+    }
   }
 
   async function deleteProspect(id: string) {
