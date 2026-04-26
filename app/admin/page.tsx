@@ -324,6 +324,9 @@ export default function Admin() {
         <div className="mx-auto flex max-w-7xl items-center justify-between">
           <h1 className="text-lg font-bold">Admin — Adrien Haubrich</h1>
           <div className="flex items-center gap-3">
+            <a href="/admin/meetings" className={`rounded-lg px-3 py-1.5 text-xs font-medium bg-white text-black hover:bg-neutral-200 no-underline`}>
+              🗓️ Mes RDV
+            </a>
             <a href="/admin/crm" className={`rounded-lg px-3 py-1.5 text-xs font-medium bg-white text-black hover:bg-neutral-200 no-underline`}>
               🤖 Mon CRM
             </a>

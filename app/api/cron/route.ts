@@ -37,6 +37,28 @@ export async function GET(request: NextRequest) {
     const todayEnd = new Date(now); todayEnd.setHours(23, 59, 59, 999);
 
     // ══════════════════════════════════════════════════════════
+    // 0. RDV / MEETINGS (today + next 7 days)
+    // ══════════════════════════════════════════════════════════
+    const sevenDaysAhead = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+    const { data: upcomingMeetings } = await supabase.from("meetings")
+      .select("*")
+      .gte("meeting_at", today.toISOString())
+      .lte("meeting_at", sevenDaysAhead.toISOString())
+      .neq("status", "canceled")
+      .order("meeting_at", { ascending: true });
+
+    type MeetingRow = {
+      id: string; title: string; business: string; meeting_at: string;
+      location: string | null; contact_name: string | null; contact_company: string | null;
+      contact_phone: string | null; contact_email: string | null; notes: string | null;
+    };
+    const meetings = (upcomingMeetings || []) as MeetingRow[];
+    const todayMeetings = meetings.filter(m => {
+      const d = new Date(m.meeting_at); return d >= today && d <= todayEnd;
+    });
+    const laterMeetings = meetings.filter(m => new Date(m.meeting_at) > todayEnd);
+
+    // ══════════════════════════════════════════════════════════
     // 1. CRM PROSPECTS
     // ══════════════════════════════════════════════════════════
     const [{ data: followUps }, { data: allProspects }, { data: replies }] = await Promise.all([
@@ -112,6 +134,55 @@ export async function GET(request: NextRequest) {
       </div>
       <div style="background:#fff;padding:24px;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 12px 12px;">`;
 
+    // ── Meetings Section (TOP) ──
+    const BUSINESS_LABELS: Record<string, { label: string; color: string }> = {
+      asl: { label: "ASL Cession", color: "#dc2626" },
+      asl_b2c: { label: "ASL B2C", color: "#991b1b" },
+      asl_b2b: { label: "ASL B2B", color: "#7c2d12" },
+      justtag: { label: "Just-Tag", color: "#ea580c" },
+      funkyfeet: { label: "FunkyFeet", color: "#7c3aed" },
+      yattoo: { label: "Yattoo", color: "#22c55e" },
+      onvoustrouve: { label: "OnVousTrouve", color: "#1e40af" },
+      other: { label: "Autre", color: "#6b7280" },
+    };
+
+    const fmtTime = (iso: string) => new Date(iso).toLocaleTimeString("fr-CH", { hour: "2-digit", minute: "2-digit" });
+    const fmtDay = (iso: string) => new Date(iso).toLocaleDateString("fr-CH", { weekday: "long", day: "numeric", month: "short" });
+
+    const renderMeeting = (m: MeetingRow, isToday: boolean) => {
+      const biz = BUSINESS_LABELS[m.business] || BUSINESS_LABELS.other;
+      const dateLabel = isToday ? `🔥 <strong>${fmtTime(m.meeting_at)}</strong>` : `${fmtDay(m.meeting_at)} · ${fmtTime(m.meeting_at)}`;
+      const contact = [m.contact_name, m.contact_company].filter(Boolean).join(" — ");
+      const phoneLink = m.contact_phone ? `<a href="tel:${m.contact_phone}" style="color:#2563eb;text-decoration:none;">📞 ${m.contact_phone}</a>` : "";
+      const emailLink = m.contact_email ? `<a href="mailto:${m.contact_email}" style="color:#2563eb;text-decoration:none;">✉️</a>` : "";
+      return `<div style="background:${isToday ? "#fffbeb" : "#f9fafb"};border:1px solid ${isToday ? "#fcd34d" : "#e5e7eb"};border-left:4px solid ${biz.color};border-radius:8px;padding:10px 12px;margin-bottom:8px;">
+        <div style="display:flex;justify-content:space-between;align-items:start;gap:8px;flex-wrap:wrap;">
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:13px;font-weight:600;color:#1f2937;">${m.title}</div>
+            <div style="font-size:11px;color:#6b7280;margin-top:2px;">${dateLabel}${m.location ? ` · 📍 ${m.location}` : ""}</div>
+            ${contact ? `<div style="font-size:11px;color:#4b5563;margin-top:2px;">${contact} ${phoneLink} ${emailLink}</div>` : ""}
+            ${m.notes ? `<div style="font-size:11px;color:#6b7280;margin-top:4px;font-style:italic;">${m.notes.replace(/</g, "&lt;").replace(/\n/g, "<br>")}</div>` : ""}
+          </div>
+          <span style="padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;background:${biz.color};color:white;white-space:nowrap;">${biz.label}</span>
+        </div>
+      </div>`;
+    };
+
+    if (todayMeetings.length > 0 || laterMeetings.length > 0) {
+      let mtgContent = "";
+      if (todayMeetings.length > 0) {
+        mtgContent += `<div style="background:#fef3c7;border:2px solid #f59e0b;border-radius:8px;padding:10px;margin-bottom:10px;">
+          <div style="font-size:13px;font-weight:700;color:#92400e;margin-bottom:6px;">🔥 ${todayMeetings.length} RDV AUJOURD'HUI</div>
+          ${todayMeetings.map(m => renderMeeting(m, true)).join("")}
+        </div>`;
+      }
+      if (laterMeetings.length > 0) {
+        mtgContent += `<div style="font-size:11px;color:#6b7280;margin-bottom:6px;">Cette semaine (${laterMeetings.length})</div>
+          ${laterMeetings.map(m => renderMeeting(m, false)).join("")}`;
+      }
+      html += section("Mes RDV", "🗓️", mtgContent);
+    }
+
     // ── CRM Section ──
     let crmContent = `<table style="width:100%;border-collapse:separate;border-spacing:6px;margin-bottom:12px;"><tr>
       ${kpi("Total", totalProspects)}
@@ -180,6 +251,7 @@ export async function GET(request: NextRequest) {
 
     // ── Actions du jour ──
     const actions: string[] = [];
+    if (todayMeetings.length > 0) actions.push(`🗓️ ${todayMeetings.length} RDV aujourd'hui — préparer les dossiers`);
     if (followUps && followUps.length > 0) actions.push(`📞 Relancer ${followUps.length} prospect(s)`);
     if (replies && replies.length > 0) actions.push(`💬 Répondre à ${replies.length} message(s)`);
     if (now.getDay() === 2) actions.push("📝 Publier l'article blog du mardi");
@@ -215,11 +287,18 @@ export async function GET(request: NextRequest) {
     const adminEmail = process.env.VICTOR_EMAIL || "contact@adrien-haubrich.com";
     const followUpCount = followUps?.length || 0;
 
+    const subjectParts: string[] = [];
+    if (todayMeetings.length > 0) subjectParts.push(`${todayMeetings.length} RDV aujourd'hui 🔥`);
+    if (followUpCount > 0) subjectParts.push(`${followUpCount} relance(s)`);
+    subjectParts.push(`${viewsYesterday ?? 0} visites hier`);
+    subjectParts.push(`${activeSubs ?? 0} abonné(s)`);
+    const subject = `🤖 Victor — ${subjectParts.join(" · ")}`;
+
     if (resend) {
       await resend.emails.send({
         from: process.env.FROM_EMAIL || "Victor <contact@just-tag.app>",
         to: adminEmail,
-        subject: `🤖 Victor — ${followUpCount} relance(s) · ${viewsYesterday ?? 0} visites hier · ${activeSubs ?? 0} abonné(s)`,
+        subject,
         html,
       });
     } else {
@@ -230,6 +309,8 @@ export async function GET(request: NextRequest) {
       ok: true,
       sentTo: adminEmail,
       summary: {
+        meetingsToday: todayMeetings.length,
+        meetingsWeek: meetings.length,
         followUps: followUpCount,
         prospects: totalProspects,
         viewsYesterday: viewsYesterday ?? 0,
