@@ -18,7 +18,7 @@ const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KE
  * - CRM: pipeline, follow-ups, replies
  * - FunkyFeet: (future — Shopify API)
  *
- * Vercel Cron: 0 5 * * * (5h UTC = 7h CEST)
+ * Vercel Cron: 0 3 * * * (3h UTC = 5h CEST théorique, livré ~6h45-7h avec delay Hobby)
  */
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get("authorization");
