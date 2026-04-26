@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import Link from "next/link";
 
 const MONTH_NAMES_FULL = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
 const MONTH_NAMES = ["Jan", "Fév", "Mar", "Avr", "Mai", "Jun", "Jul", "Aoû", "Sep", "Oct", "Nov", "Déc"];
@@ -324,12 +325,24 @@ export default function Admin() {
         <div className="mx-auto flex max-w-7xl items-center justify-between">
           <h1 className="text-lg font-bold">Admin — Adrien Haubrich</h1>
           <div className="flex items-center gap-3">
-            <a href="/admin/meetings" className={`rounded-lg px-3 py-1.5 text-xs font-medium bg-white text-black hover:bg-neutral-200 no-underline`}>
+            <Link href="/admin/meetings" className={`rounded-lg px-3 py-1.5 text-xs font-medium bg-white text-black hover:bg-neutral-200 no-underline`}>
               🗓️ Mes RDV
-            </a>
-            <a href="/admin/crm" className={`rounded-lg px-3 py-1.5 text-xs font-medium bg-white text-black hover:bg-neutral-200 no-underline`}>
+            </Link>
+            <Link href="/admin/crm" className={`rounded-lg px-3 py-1.5 text-xs font-medium bg-white text-black hover:bg-neutral-200 no-underline`}>
               🤖 Mon CRM
-            </a>
+            </Link>
+            <button
+              onClick={async () => {
+                await fetch("/api/admin/auth/logout", { method: "POST" });
+                sessionStorage.removeItem("ah-admin-auth");
+                sessionStorage.removeItem("ah-admin-pwd");
+                window.location.href = "/admin/login";
+              }}
+              className={`rounded-lg px-3 py-1.5 text-xs font-medium ${darkMode ? "bg-white/5 text-neutral-400 hover:bg-white/10" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
+              title="Déconnexion"
+            >
+              ⏻
+            </button>
             <button
               onClick={() => {
                 const local = loadAllLocal();
