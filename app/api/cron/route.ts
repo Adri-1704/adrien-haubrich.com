@@ -18,7 +18,7 @@ const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KE
  * - CRM: pipeline, follow-ups, replies
  * - FunkyFeet: (future — Shopify API)
  *
- * Vercel Cron: 0 3 * * * (3h UTC = 5h CEST théorique, livré ~6h45-7h avec delay Hobby)
+ * Vercel Cron: 0 5 * * * (5h UTC = 7h CEST). Toutes les dates et heures formatées en Europe/Zurich.
  */
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get("authorization");
@@ -28,13 +28,26 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    const TZ = "Europe/Zurich";
+    // Compute "today" in Europe/Zurich timezone (server is UTC on Vercel)
+    function zurichDayStart(d: Date): Date {
+      const dateStr = new Intl.DateTimeFormat("en-CA", {
+        timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit",
+      }).format(d);
+      const offsetPart = new Intl.DateTimeFormat("en-US", {
+        timeZone: TZ, timeZoneName: "longOffset",
+      }).formatToParts(d).find(p => p.type === "timeZoneName")?.value || "GMT+02:00";
+      const offset = offsetPart.replace("GMT", "") || "+02:00";
+      return new Date(`${dateStr}T00:00:00${offset}`);
+    }
+
     const now = new Date();
-    const today = new Date(now); today.setHours(0, 0, 0, 0);
-    const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-    const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    const today = zurichDayStart(now);
+    const todayEnd = new Date(today.getTime() + 24 * 60 * 60 * 1000 - 1);
+    const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000);
+    const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
     const twoDaysAgo = new Date(now.getTime() - 48 * 60 * 60 * 1000);
-    const todayEnd = new Date(now); todayEnd.setHours(23, 59, 59, 999);
 
     // ══════════════════════════════════════════════════════════
     // 0. RDV / MEETINGS (today + next 7 days)
@@ -115,7 +128,7 @@ export async function GET(request: NextRequest) {
     // ══════════════════════════════════════════════════════════
     // BUILD EMAIL
     // ══════════════════════════════════════════════════════════
-    const dateStr = now.toLocaleDateString("fr-CH", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+    const dateStr = now.toLocaleDateString("fr-CH", { weekday: "long", year: "numeric", month: "long", day: "numeric", timeZone: TZ });
 
     const section = (title: string, emoji: string, content: string) => `
       <div style="margin-bottom:24px;">
@@ -146,8 +159,8 @@ export async function GET(request: NextRequest) {
       other: { label: "Autre", color: "#6b7280" },
     };
 
-    const fmtTime = (iso: string) => new Date(iso).toLocaleTimeString("fr-CH", { hour: "2-digit", minute: "2-digit" });
-    const fmtDay = (iso: string) => new Date(iso).toLocaleDateString("fr-CH", { weekday: "long", day: "numeric", month: "short" });
+    const fmtTime = (iso: string) => new Date(iso).toLocaleTimeString("fr-CH", { hour: "2-digit", minute: "2-digit", timeZone: TZ });
+    const fmtDay = (iso: string) => new Date(iso).toLocaleDateString("fr-CH", { weekday: "long", day: "numeric", month: "short", timeZone: TZ });
 
     const renderMeeting = (m: MeetingRow, isToday: boolean) => {
       const biz = BUSINESS_LABELS[m.business] || BUSINESS_LABELS.other;
